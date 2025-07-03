@@ -3,7 +3,7 @@ window.onload = () => {
     document.getElementById("splash").style.display = "none";
     document.getElementById("main").style.display = "block";
     getLocation();
-  }, 5000); // Splash duration
+  }, 4000); // splash duration
 };
 
 document.getElementById("profileBtn").onclick = () => {
@@ -13,42 +13,20 @@ document.getElementById("profileBtn").onclick = () => {
 
 function getLocation() {
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
+        const data = await response.json();
+        const locationText = `${data.address.village || data.address.town || data.address.city || "Your Area"}, ${data.address.road || ""} - ${data.address.postcode || ""}`;
+        document.getElementById("location").textContent = "📍 " + locationText;
+      } catch {
+        document.getElementById("location").textContent = "📍 Location found";
+      }
+    });
   } else {
     document.getElementById("location").textContent = "Location not supported.";
-  }
-}
-
-function showPosition(position) {
-  const temp = Math.floor(Math.random() * 15) + 10; // Simulated temp
-  document.getElementById("location").textContent = "📍 Village Street, India";
-  const tempElem = document.getElementById("temperature");
-  tempElem.textContent = `🌡 ${temp}°C`;
-
-  const weatherContainer = document.getElementById("weatherEffect");
-
-  if (temp < 18) {
-    for (let i = 0; i < 20; i++) {
-      let drop = document.createElement("div");
-      drop.className = "raindrop";
-      drop.style.left = `${Math.random() * 50}px`;
-      drop.style.animationDelay = `${Math.random()}s`;
-      weatherContainer.appendChild(drop);
-    }
-    tempElem.innerHTML += " 🌧️";
-  } else if (temp < 20) {
-    for (let i = 0; i < 20; i++) {
-      let flake = document.createElement("div");
-      flake.className = "snowflake";
-      flake.style.left = `${Math.random() * 50}px`;
-      flake.style.animationDelay = `${Math.random()}s`;
-      weatherContainer.appendChild(flake);
-    }
-    tempElem.innerHTML += " ❄️";
-  } else {
-    const sun = document.createElement("div");
-    sun.className = "sun";
-    weatherContainer.appendChild(sun);
-    tempElem.innerHTML += " ☀️";
   }
 }
