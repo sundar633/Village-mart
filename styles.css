@@ -6,6 +6,7 @@ body {
   color: white;
 }
 
+/* Splash */
 #splash {
   position: fixed;
   background: black;
@@ -17,18 +18,18 @@ body {
   z-index: 999;
 }
 
-.splash-logo {
-  width: 150px;
-  animation: fadeOut 1s ease-out forwards;
-  animation-delay: 4s;
+.splash-icon i {
+  font-size: 60px;
+  color: white;
+  animation: flicker 1s infinite;
 }
 
-@keyframes fadeOut {
-  to {
-    opacity: 0;
-  }
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
+/* Header */
 header {
   display: flex;
   justify-content: space-between;
@@ -37,18 +38,20 @@ header {
   background: rgba(0, 0, 0, 0.5);
 }
 
-.title {
-  text-align: center;
-  font-size: 1.8em;
-  flex: 1;
-}
-
 #location {
   font-size: 0.9em;
+  width: 30%;
+}
+
+.title {
+  font-size: 1.6em;
+  text-align: center;
+  flex: 1;
 }
 
 .profile-menu {
   position: relative;
+  width: 30px;
 }
 
 #profileBtn {
@@ -81,6 +84,7 @@ header {
   text-decoration: underline;
 }
 
+/* Categories */
 .categories {
   display: flex;
   flex-wrap: wrap;
@@ -112,6 +116,7 @@ header {
   transform: scale(1.05);
 }
 
+/* Footer */
 footer {
   text-align: center;
   padding: 15px;
@@ -120,57 +125,9 @@ footer {
   font-size: 0.9em;
 }
 
-/* Weather effects */
-#weatherEffect {
-  position: absolute;
-  top: 60px;
-  left: 10px;
-  width: 60px;
-  height: 80px;
-  pointer-events: none;
-  z-index: 10;
-}
-
-.snowflake, .raindrop {
-  position: absolute;
-  top: -10px;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  animation: fall 3s linear infinite;
-}
-
-.snowflake {
-  background: white;
-  opacity: 0.8;
-}
-
-.raindrop {
-  width: 2px;
-  height: 15px;
-  background: lightblue;
-  opacity: 0.6;
-  animation: rainFall 0.7s linear infinite;
-}
-
-.sun {
-  width: 40px;
-  height: 40px;
-  background: radial-gradient(circle, yellow 40%, orange 70%);
-  border-radius: 50%;
-  box-shadow: 0 0 20px yellow;
-  animation: rotateSun 8s linear infinite;
-}
-
-@keyframes fall {
-  to { transform: translateY(80px); }
-}
-
-@keyframes rainFall {
-  to { transform: translateY(80px); }
-}
-
-@keyframes rotateSun {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+/* Responsive */
+@media (max-width: 768px) {
+  .category-card {
+    width: 45%;
+  }
 }
