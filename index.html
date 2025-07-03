@@ -7,16 +7,15 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- Splash screen -->
+  <!-- Splash Screen -->
   <div id="splash">
-    <img src="assets/logo.png" alt="Village Mart Logo" class="splash-logo" />
+    <div class="splash-icon">
+      <i class="fas fa-shopping-cart"></i>
+    </div>
   </div>
 
-  <!-- Weather effect container -->
-  <div id="weatherEffect"></div>
-
-  <!-- Main content -->
-  <div id="main" style="display:none;">
+  <!-- Main Content -->
+  <div id="main" style="display: none;">
     <header>
       <div id="location">📍 Getting location...</div>
       <h1 class="title">Village Mart</h1>
@@ -33,9 +32,7 @@
       </div>
     </header>
 
-    <div class="temperature" id="temperature"></div>
-
-    <!-- Categories -->
+    <!-- Category Cards -->
     <div class="categories">
       <a href="home.html" class="category-card">
         <img src="assets/home.png" alt="Home" />
@@ -63,11 +60,14 @@
       </a>
     </div>
 
+    <!-- Footer -->
     <footer>
       <p>© 2025 All Rights Reserved</p>
     </footer>
   </div>
 
+  <!-- Font Awesome for icon -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script src="script.js"></script>
 </body>
 </html>
