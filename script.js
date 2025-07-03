@@ -2,8 +2,8 @@ window.onload = () => {
   setTimeout(() => {
     document.getElementById("splash").style.display = "none";
     document.getElementById("main").style.display = "block";
-    getLocation();
-  }, 5000); // Splash duration
+    initApp();
+  }, 5000);
 };
 
 document.getElementById("profileBtn").onclick = () => {
@@ -11,44 +11,58 @@ document.getElementById("profileBtn").onclick = () => {
   dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
 };
 
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else {
-    document.getElementById("location").textContent = "Location not supported.";
-  }
+function initApp() {
+  getLocationByIP();
+  triggerWeatherEffect();
 }
 
-function showPosition(position) {
-  const temp = Math.floor(Math.random() * 15) + 10; // Simulated temp
-  document.getElementById("location").textContent = "📍 Village Street, India";
-  const tempElem = document.getElementById("temperature");
-  tempElem.textContent = `🌡 ${temp}°C`;
+// 📍 Get location using IP address (no API key needed)
+function getLocationByIP() {
+  fetch("https://ipapi.co/json/")
+    .then((res) => res.json())
+    .then((data) => {
+      const village = data.city || data.region;
+      const pincode = data.postal || '';
+      showLocation(`📍 ${village}, ${pincode}`);
+    })
+    .catch(() => {
+      showLocation("📍 Location not available");
+    });
+}
 
+function showLocation(text) {
+  document.getElementById("locText").textContent = text;
+}
+
+// Weather simulation
+function triggerWeatherEffect() {
+  const temp = Math.floor(Math.random() * 15) + 10;
+  const tempElem = document.getElementById("temperature");
   const weatherContainer = document.getElementById("weatherEffect");
 
-  if (temp < 18) {
-    for (let i = 0; i < 20; i++) {
-      let drop = document.createElement("div");
-      drop.className = "raindrop";
-      drop.style.left = `${Math.random() * 50}px`;
-      drop.style.animationDelay = `${Math.random()}s`;
-      weatherContainer.appendChild(drop);
-    }
-    tempElem.innerHTML += " 🌧️";
-  } else if (temp < 20) {
-    for (let i = 0; i < 20; i++) {
-      let flake = document.createElement("div");
-      flake.className = "snowflake";
-      flake.style.left = `${Math.random() * 50}px`;
-      flake.style.animationDelay = `${Math.random()}s`;
-      weatherContainer.appendChild(flake);
-    }
-    tempElem.innerHTML += " ❄️";
-  } else {
-    const sun = document.createElement("div");
-    sun.className = "sun";
-    weatherContainer.appendChild(sun);
-    tempElem.innerHTML += " ☀️";
+  if (temp < 18) simulate('raindrop', 20, tempElem, '🌧️');
+  else if (temp < 20) simulate('snowflake', 20, tempElem, '❄️');
+  else simulateSingle('sun', tempElem, '☀️');
+
+  tempElem.innerHTML = `🌡 ${temp}°C ${tempElem.innerHTML}`;
+  setTimeout(() => weatherContainer.innerHTML = '', 10000); // remove effects after 10s
+}
+
+function simulate(cls, count, tempElem, icon) {
+  const container = document.getElementById("weatherEffect");
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement("div");
+    el.className = cls;
+    el.style.left = `${Math.random() * window.innerWidth}px`;
+    el.style.animationDelay = `${Math.random() * 3}s`;
+    container.appendChild(el);
   }
+  tempElem.innerHTML += ` ${icon}`;
+}
+
+function simulateSingle(cls, tempElem, icon) {
+  const el = document.createElement("div");
+  el.className = cls;
+  document.getElementById("weatherEffect").appendChild(el);
+  tempElem.innerHTML += ` ${icon}`;
 }
