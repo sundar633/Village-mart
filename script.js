@@ -1,54 +1,58 @@
-window.onload = () => {
-  setTimeout(() => {
-    document.getElementById("splash").style.display = "none";
-    document.getElementById("main").style.display = "block";
-    getLocation();
-  }, 5000); // Splash duration
-};
+// Splash hide after 5 seconds
+setTimeout(() => {
+  document.getElementById("splash").style.display = "none";
+  document.getElementById("main").style.display = "block";
+}, 5000);
 
+// Profile dropdown toggle
 document.getElementById("profileBtn").onclick = () => {
-  const dropdown = document.getElementById("profileDropdown");
-  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  const drop = document.getElementById("profileDropdown");
+  drop.style.display = drop.style.display === "block" ? "none" : "block";
 };
 
+// Get user location
 function getLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(showPosition);
   } else {
-    document.getElementById("location").textContent = "Location not supported.";
+    document.getElementById("location").innerText = "Geolocation not supported.";
   }
 }
 
 function showPosition(position) {
-  const temp = Math.floor(Math.random() * 15) + 10; // Simulated temp
-  document.getElementById("location").textContent = "📍 Village Street, India";
-  const tempElem = document.getElementById("temperature");
-  tempElem.textContent = `🌡 ${temp}°C`;
-
-  const weatherContainer = document.getElementById("weatherEffect");
-
-  if (temp < 18) {
-    for (let i = 0; i < 20; i++) {
-      let drop = document.createElement("div");
-      drop.className = "raindrop";
-      drop.style.left = `${Math.random() * 50}px`;
-      drop.style.animationDelay = `${Math.random()}s`;
-      weatherContainer.appendChild(drop);
-    }
-    tempElem.innerHTML += " 🌧️";
-  } else if (temp < 20) {
-    for (let i = 0; i < 20; i++) {
-      let flake = document.createElement("div");
-      flake.className = "snowflake";
-      flake.style.left = `${Math.random() * 50}px`;
-      flake.style.animationDelay = `${Math.random()}s`;
-      weatherContainer.appendChild(flake);
-    }
-    tempElem.innerHTML += " ❄️";
-  } else {
-    const sun = document.createElement("div");
-    sun.className = "sun";
-    weatherContainer.appendChild(sun);
-    tempElem.innerHTML += " ☀️";
-  }
+  const lat = position.coords.latitude;
+  const lon = position.coords.longitude;
+  fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`)
+    .then(response => response.json())
+    .then(data => {
+      const loc = `${data.locality || data.city}, ${data.principalSubdivision}, ${data.postcode}`;
+      document.getElementById("location").innerText = "📍 " + loc;
+      showWeatherEffect();
+    });
 }
+
+// Weather effect (just demo - you can extend using real API)
+function showWeatherEffect() {
+  const temp = Math.floor(Math.random() * 30); // Fake temp
+  const container = document.getElementById("weatherEffect");
+  container.innerHTML = "";
+
+  for (let i = 0; i < 20; i++) {
+    const el = document.createElement("div");
+    if (temp < 18) {
+      el.className = "raindrop";
+    } else if (temp < 20) {
+      el.className = "snowflake";
+    } else {
+      el.className = "sun";
+    }
+    el.style.left = `${Math.random() * 100}%`;
+    container.appendChild(el);
+  }
+
+  setTimeout(() => {
+    container.innerHTML = "";
+  }, 10000);
+}
+
+window.onload = getLocation;
