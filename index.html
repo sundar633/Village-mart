@@ -9,36 +9,63 @@
 <body>
   <!-- Splash screen -->
   <div id="splash">
-    <img src="assets/logo.png" alt="Shopping Logo" class="logo" />
+    <img src="assets/logo.png" alt="Village Mart Logo" class="splash-logo" />
   </div>
 
-  <!-- Main content (hidden initially) -->
-  <div id="main" style="display: none;">
+  <!-- Weather effect container -->
+  <div id="weatherEffect"></div>
+
+  <!-- Main content -->
+  <div id="main" style="display:none;">
     <header>
-      <button class="icon-btn">👤</button>
-      <h1>Village Mart</h1>
-      <button class="icon-btn">👤</button>
+      <div id="location">📍 Getting location...</div>
+      <h1 class="title">Village Mart</h1>
+      <div class="profile-menu">
+        <button id="profileBtn">👤</button>
+        <div class="profile-dropdown" id="profileDropdown">
+          <a href="#">Login</a>
+          <a href="#">Signup</a>
+          <a href="#">Help & Support</a>
+          <a href="#">My Orders</a>
+          <a href="#">About Us</a>
+          <a href="#">Payment History</a>
+        </div>
+      </div>
     </header>
 
-    <div class="status-bar">
-      <span id="temperature">🌡 Loading...</span>
-      <span id="location">📍 Locating...</span>
-    </div>
+    <div class="temperature" id="temperature"></div>
 
-    <div class="search-filter">
-      <input type="text" placeholder="Search items..." />
-      <button>🔍</button>
-      <button>⚙️</button>
-    </div>
-
+    <!-- Categories -->
     <div class="categories">
-      <div class="category-card">Home</div>
-      <div class="category-card">Groceries</div>
-      <div class="category-card">Kitchen</div>
-      <div class="category-card">Veg Food</div>
-      <div class="category-card">Non-Veg Food</div>
-      <div class="category-card">Clothes</div>
+      <a href="home.html" class="category-card">
+        <img src="assets/home.png" alt="Home" />
+        <p>Home</p>
+      </a>
+      <a href="groceries.html" class="category-card">
+        <img src="assets/groceries.png" alt="Groceries" />
+        <p>Groceries</p>
+      </a>
+      <a href="kitchen.html" class="category-card">
+        <img src="assets/kitchen.png" alt="Kitchen" />
+        <p>Kitchen</p>
+      </a>
+      <a href="veg.html" class="category-card">
+        <img src="assets/veg.png" alt="Veg Food" />
+        <p>Veg Food</p>
+      </a>
+      <a href="nonveg.html" class="category-card">
+        <img src="assets/nonveg.png" alt="Non-Veg Food" />
+        <p>Non-Veg Food</p>
+      </a>
+      <a href="clothes.html" class="category-card">
+        <img src="assets/clothes.png" alt="Clothes" />
+        <p>Clothes</p>
+      </a>
     </div>
+
+    <footer>
+      <p>© 2025 All Rights Reserved</p>
+    </footer>
   </div>
 
   <script src="script.js"></script>
