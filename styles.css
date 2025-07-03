@@ -17,6 +17,19 @@ body {
   z-index: 9999;
 }
 
+.splash-icon {
+  font-size: 80px;
+  color: #ffffff;
+  animation: cartSpin 2s linear infinite;
+}
+
+@keyframes cartSpin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.2); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+
 .light-flash {
   position: absolute;
   width: 100%;
@@ -25,16 +38,6 @@ body {
   animation: flash 3s ease-in-out;
 }
 
-@keyframes flash {
-  0%, 100% { opacity: 0; }
-  20%, 60% { opacity: 1; }
-  40%, 80% { opacity: 0; }
-}
-
-.splash-logo {
-  width: 150px;
-  z-index: 10000;
-}
 
 .header-container {
   display: flex;
