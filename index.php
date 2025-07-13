@@ -1,3 +1,8 @@
+<?php
+session_start();
+$isLoggedIn = isset($_SESSION['user_name']);
+$userName = $isLoggedIn ? $_SESSION['user_name'] : '';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -740,13 +745,18 @@
     <div class="location" id="location">Detecting location...</div>
     <div class="profile" onclick="toggleDropdown()">
       <img src="https://img.icons8.com/ios-filled/50/000000/user-male-circle.png" alt="Profile" />
-      <div class="dropdown" id="profileDropdown">
-        <a href="#">Login</a>
-        <a href="#">Sign Up</a>
-        <a href="#">Order Details</a>
-        <a href="#">Payment History</a>
-        <a href="#">Logout</a>
-      </div>
+     <div class="dropdown" id="profileDropdown">
+  <?php if ($isLoggedIn): ?>
+    <a href="#">👋 <?php echo htmlspecialchars($userName); ?></a>
+    <a href="#">Order Details</a>
+    <a href="#">Payment History</a>
+    <a href="logout.php">Logout</a>
+  <?php else: ?>
+    <a href="login.html">Login</a>
+    <a href="login.html">Sign Up</a>
+  <?php endif; ?>
+</div>
+
     </div>
   </div>
 
