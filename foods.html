@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Village Mart</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #e6f2ff;
+      padding-top: 80px;
+      min-height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      z-index: 1000;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .back-btn {
+      position: absolute;
+      left: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .back-btn img {
+      width: 28px;
+      height: 28px;
+    }
+
+    .cart-icon {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .cart-icon img {
+      width: 30px;
+      height: 30px;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: 10px;
+      right: 5px;
+      background: red;
+      color: white;
+      border-radius: 50%;
+      font-size: 12px;
+      padding: 2px 6px;
+      font-weight: bold;
+      display: none;
+    }
+
+    .bottom-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: #fff;
+      box-shadow: 0 -1px 3px rgba(0,0,0,0.05);
+      font-size: 16px;
+      flex-wrap: wrap;
+    }
+
+    .location {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .location img {
+      width: 24px;
+    }
+
+    #search-input {
+      margin-top: 5px;
+      padding: 6px 30px 6px 35px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 100%;
+      max-width: 200px;
+      background: #fff url('https://img.icons8.com/ios-filled/20/000000/search--v1.png') no-repeat 10px center;
+      background-size: 16px 16px;
+    }
+
+    .cart-modal {
+      position: fixed;
+      top: 70px;
+      right: 10px;
+      background: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      padding: 20px;
+      width: 300px;
+      max-height: 400px;
+      overflow-y: auto;
+      z-index: 2000;
+      display: none;
+      border-radius: 8px;
+    }
+
+    #cart-content.empty-msg {
+      font-size: 14px;
+      color: #888;
+      text-align: center;
+    }
+
+    .restaurant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+.restaurant-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.restaurant-container.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+
+.restaurant-card {
+  width: 100%;
+  max-width: 500px;
+  height: 140px;
+  display: flex;
+  background: #ffffff90;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 10px;
+  cursor: pointer;
+}
+
+
+.restaurant-card img {
+  width: 100px;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 12px;
+}
+
+.restaurant-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+
+    .restaurant-info h4 {
+      margin: 4px 0 2px;
+      font-size: 16px;
+    }
+
+    .restaurant-info small {
+      display: block;
+      font-size: 12px;
+      color: #555;
+    }
+
+    .restaurant-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ffffff; /* default fallback */
+  z-index: 3000;
+  display: none;
+  overflow-y: auto;
+  padding: 20px;
+  transition: background-color 0.5s ease; /* smooth animation */
+}
+
+
+
+
+   .popup-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: rgba(255, 255, 255, 0.9); /* translucent */
+  backdrop-filter: blur(8px); /* softens image behind */
+  padding: 12px 16px;
+  border-bottom: 1px solid #ddd;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+
+
+    .popup-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .item-card {
+      width: calc(50% - 10px);
+      background: #f7f7f7;
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .item-card img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .item-card h5 {
+      margin: 8px 0 4px;
+      font-size: 14px;
+    }
+
+    .item-card small {
+      font-size: 12px;
+      display: block;
+      color: #555;
+    }
+
+    .qty-controls {
+      margin-top: 6px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .qty-controls button {
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    }
+
+    .order-btn {
+      margin-top: 10px;
+      background: green;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    body {
+  transition: background-color 1s ease;
+}
+.img-wrapper {
+  position: relative;
+}
+
+.img-wrapper img {
+  display: block;
+}
+
+.heart-toggle {
+  position: absolute;
+  top: -3px;
+  right: 9px;
+  font-size: 25px;
+  background: none;
+  border: none;
+  color: rgb(192, 252, 208);
+  cursor: pointer;
+  transition: transform 0.3s ease, color 0.3s ease;
+  z-index: 10;
+}
+.heart-toggle.favorited {
+  color: red;
+  animation: popHeart 0.4s ease;
+}
+
+@keyframes popHeart {
+  0%   { transform: scale(1); color: white; }
+  50%  { transform: scale(1.5); color: pink; }
+  100% { transform: scale(1); color: red; }
+}
+
+
+  @keyframes colorFlash {
+    0% { color: orange; }
+    25% { color: yellow; }
+    50% { color: green; }
+    75% { color: blue; }
+    100% { color: red; }
+  }
+  @keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.restaurant-container {
+  opacity: 0;
+  animation: slideUpFade 0.5s ease forwards;
+}
+/* === Popup Slide-Up Animation === */
+@keyframes popupSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.restaurant-popup.show {
+  animation: popupSlideUp 0.4s ease forwards;
+}
+
+/* === Item Card Drop-Down Animation === */
+@keyframes itemSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.item-card {
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: itemSlideDown 0.3s ease forwards;
+}
+
+
+
+
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <button class="back-btn" onclick="goBack()">
+      <img src="https://img.icons8.com/ios-filled/50/000000/back.png" alt="Back">
+    </button>
+    <h1>Village Mart</h1>
+    <button class="cart-icon" onclick="toggleCart()">
+      <img src="https://img.icons8.com/ios-filled/50/000000/shopping-cart.png" alt="Cart">
+      <span class="cart-badge" id="cart-count">0</span>
+    </button>
+  </div>
+
+  <div class="bottom-bar">
+    <div class="location">
+      <img src="https://img.icons8.com/ios-filled/50/000000/marker.png" alt="Location">
+      <span id="display-location">Detecting location...</span>
+      <input type="text" id="search-input" placeholder="Search Restaurant..." />
+    </div>
+  </div>
+
+  <div class="restaurant-list" id="restaurant-list"></div>
+
+  <div class="restaurant-popup" id="restaurant-popup">
+  <div class="popup-header">
+    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+     <button onclick="closePopup()" class="back-arrow-btn" aria-label="Go back">
+  &#8592;
+</button>
+
+      <h2 id="popup-title" style="margin: 0; font-size: 20px;">Restaurant Name</h2>
+      <div style="width: 50px;"></div>
+    </div>
+    <input type="text" id="popup-search" placeholder="Search items..." 
+           style="margin-top: 10px; padding: 8px 12px; width: 100%; border: 1px solid #ccc; border-radius: 6px;" 
+           oninput="filterPopupItems()" />
+  </div>
+
+  <div class="popup-items" id="popup-items">
+    <!-- item cards go here -->
+  </div>
+</div>
+
+
+
+
+
+  <div class="cart-modal" id="cart-modal">
+    <p id="cart-content">Cart is empty.</p>
+  </div>
+
+  <script>
+  function goBack() {
+    window.location.href = 'index.html';
+  }
+
+  function detectLocation() {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+            .then(res => res.json())
+            .then(data => {
+              const village = data.address.village || data.address.suburb || data.address.town || data.address.city || "Unknown";
+              const state = data.address.state || "Unknown State";
+              document.getElementById("display-location").textContent = `${village}, ${state}`;
+            })
+            .catch(() => {
+              document.getElementById("display-location").textContent = "Location unavailable";
+            });
+        },
+        () => {
+          document.getElementById("display-location").textContent = "Location unavailable";
+        }
+      );
+    } else {
+      document.getElementById("display-location").textContent = "Geolocation not supported";
+    }
+  }
+
+  detectLocation();
+
+  let cart = {};
+
+  function updateCartBadge() {
+    const badge = document.getElementById("cart-count");
+    const totalItems = Object.values(cart).reduce((sum, item) => sum + item.qty, 0);
+    if (totalItems > 0) {
+      badge.textContent = totalItems;
+      badge.style.display = "inline-block";
+    } else {
+      badge.style.display = "none";
+    }
+  }
+function toggleCart() {
+  const modal = document.getElementById("cart-modal");
+  const totalItems = Object.values(cart).reduce((sum, item) => sum + item.qty, 0);
+
+  if (totalItems === 0) {
+    return; // 🚫 Do nothing if cart is empty
+  }
+
+  const isOpen = modal.style.display === "block";
+
+  if (isOpen) {
+    modal.style.display = "none";
+  } else {
+    modal.style.display = "block";
+    renderCart();
+
+    // Auto-close after 3 seconds
+    setTimeout(() => {
+      modal.style.display = "none";
+    }, 3000);
+  }
+}
+
+
+function renderCart() {
+  const content = document.getElementById("cart-content");
+  const items = Object.entries(cart);
+
+  if (items.length === 0) {
+    content.innerHTML = '<p class="empty-msg">Cart is empty.</p>';
+    return;
+  }
+
+  let html = items.map(([id, item]) => `
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+      <img src="${item.img}" width="40" height="40" style="border-radius: 4px; object-fit: cover;" />
+      <div style="flex: 1;">
+        <strong>${item.name}</strong><br>
+        ₹${item.price} x ${item.qty}
+      </div>
+      <button onclick="removeCartItem('${id}')" style="background: red; color: white; border: none; padding: 6px 8px; border-radius: 4px; cursor: pointer;">Remove</button>
+    </div>
+  `).join('');
+
+  html += `
+  <button onclick="(function() {
+    const items = Object.values(cart).map(item => ({
+      name: item.name,
+      img: item.img,
+      price: item.price,
+      qty: item.qty
+    }));
+    localStorage.setItem('orderData', JSON.stringify(items));
+    window.location.href = 'order.html';
+  })()"
+  style="margin-top: 10px; width: 100%; background: green; color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer;">
+    Place Order
+  </button>`;
+
+  content.innerHTML = html;
+}
+
+function removeCartItem(id) {
+  delete cart[id];
+  updateCartBadge();
+  renderCart();
+}
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target); // Optional: animate only once
+    }
+  });
+}, {
+  threshold: 0.1
+});
+
+
+  function renderRestaurants() {
+  const list = document.getElementById("restaurant-list");
+
+  const colors = [
+    "#ffe6e6", "#e6ffe6", "#ffe6cc", "#fff0e6",
+    "#f0e6ff", "#f9f9cc", "#d9f2e6", "#ffebcc",
+    "#e6ccff", "#ccf2ff", "#ffe6cc", "#e6ffe6",
+    "#e6e6ff", "#ffd9ec", "#d6f5d6"
+  ];
+
+  const restaurants = [
+  { name: "Chittori Restaurant", rating: 5, distance: "📍 9.5km", time: "15–30 mins", img: "food/food1.jpg" },
+  { name: "vaarahi Restaurant", rating: 4.5, distance: "📍 3.2km", time: "15–30 mins", img: "food/food2.jpg" },
+  { name: "Abhiruchi", rating: 4, distance: "📍 2.7km", time: "15–30 mins", img: "food/food3.jpg" },
+  { name: "SatyaSri", rating: 4.5, distance: "📍 5.1km", time: "15–30 mins", img: "food/food19.jpeg" },
+  { name: "Padem Kodi Restaurant", rating: 4.2, distance: "📍 4.0km", time: "15–30 mins", img: "food/food5.jpg" },
+  { name: "jk Restaurant", rating: 5, distance: "📍 6.8km", time: "15–30 mins", img: "food/food6.jpg" },
+  { name: "Hotel Vijetha", rating: 4, distance: "📍 3.5km", time: "15–30 mins", img: "food/food 18.jpeg" },
+  { name: "Garden Foodex", rating: 4.3, distance: "📍 4.4km", time: "15–30 mins", img: "food/food8.jpg" },
+  { name: "Mubarak", rating: 4.8, distance: "📍 2.2km", time: "15–30 mins", img: "food/food9.jpg" },
+  { name: "kumar Restaurant", rating: 5, distance: "📍 5.0km", time: "15–30 mins", img: "food/food10.jpg" },
+  { name: "ShankarVilas Tifins", rating: 4.6, distance: "📍 6.1km", time: "15–30 mins", img: "food/food11.jpg" },
+  { name: "Spicy Restaurant", rating: 4.1, distance: "📍 7.8km", time: "15–30 mins", img: "food/food12.jpg" },
+  { name: "Sangeeth Restaurant", rating: 4.9, distance: "📍 3.9km", time: "15–30 mins", img: "food/food13.jpg" },
+  { name: "Hungry Harbour", rating: 4.4, distance: "📍 2.5km", time: "15–30 mins", img: "food/food14.jpg" },
+  { name: "Madina Veg& Nonveg Restaurant", rating: 5, distance: "📍 8.3km", time: "15–30 mins", img: "food/food15.jpg" }
+];
+
+
+
+
+  for (let i = 0; i < restaurants.length; i++) {
+  const restaurant = restaurants[i];
+
+  const container = document.createElement("div");
+  container.className = "restaurant-container";
+  container.style.backgroundColor = colors[i % colors.length];
+  container.style.padding = "10px";
+  container.style.animationDelay = `${i * 0.1}s`; // delay each by 0.1s
+  container.style.borderRadius = "10px";
+
+  const card = document.createElement("div");
+  card.className = "restaurant-card";
+  card.innerHTML = `
+    <div class="img-wrapper">
+      <img src="${restaurant.img}" />
+     <button class="heart-toggle" onclick="toggleHeart(this)">♡</button>
+
+    </div>
+    <div class="restaurant-info">
+      <strong>${restaurant.name}</strong>
+      <span>⭐ ${restaurant.rating}</span>
+      <span>${restaurant.distance}</span>
+      <span>⏱️ ${restaurant.time}</span>
+    </div>
+  `;
+
+  card.querySelector('.restaurant-info').onclick = () => {
+  openRestaurantPopup(restaurant.name);
+};
+
+
+  container.appendChild(card);
+  list.appendChild(container);
+  observer.observe(container);
+}
+}
+
+  function openRestaurantPopup(name) {
+  document.getElementById("popup-title").textContent = name;
+  const items = document.getElementById("popup-items");
+  items.innerHTML = "";
+
+  const restaurantItems = {
+    "Chittori Restaurant": [
+  { name: "Chiken Biriyani", price: 120, img: "food/chikenbiriyani.jpg" },
+  { name: "Chiken dum Biriyani", price: 130, img: "food/chikendum.jpg" },
+  { name: "Pot biryinai", price: 140, img: "food/potbiriyani.jpg" },
+  { name: "Mughali biryani", price: 150, img: "food/mughali.jpg" },
+  { name: "Chiken palav", price: 110, img: "food/chikenpalav.jpg" },
+  { name: "Egg fried rice", price: 90, img: "food/eggfriedrice.jpg" },
+  { name: "Fry peice Biriyani", price: 140, img: "food/frypiece.jpg" },
+  { name: "Muttin biriyani", price: 160, img: "food/muttin.jpg" },
+  { name: "Frans biriyani", price: 135, img: "food/frans.jpg" },
+  { name: "Fish biriyani", price: 145, img: "food/fish.jpg" },
+  { name: "Ckiken 65", price: 100, img: "food/chiken65.jpg" },
+  { name: "Ckiken 555", price: 110, img: "food/chiken555.jpg" },
+  { name: "Rr chiken", price: 115, img: "food/rrchiken.jpg" },
+  { name: "Chilly chiken", price: 105, img: "food/chillychiken.jpg" },
+  { name: "dragon lolipop", price: 95, img: "food/dragonlolipop.jpg" },
+  { name: "Chiken lopipop", price: 90, img: "food/chikenlolipop.jpg" },
+  { name: "Veg Biriyani", price: 100, img: "food/vegbiriyani.jpg" },
+  { name: "Panner biriyani", price: 120, img: "food/pannerbiriyani.jpg" },
+  { name: "Zedippappu Biriyani", price: 130, img: "food/zedippappu.jpg" },
+  { name: "Veg fried rice", price: 85, img: "food/vegfriedrice.jpg" },
+  { name: "Veg noodles", price: 80, img: "food/vegnoodles.jpg" },
+  { name: "Veg manchuria", price: 90, img: "food/vegmanchuria.jpg" },
+  { name: "Ghobi fried rice", price: 95, img: "food/ghobifriedrice.jpeg" },
+  { name: "Mushroom Biriyani", price: 110, img: "food/mushroom biriani.jpg" },
+  { name: "Veg rool", price: 60, img: "food/vegroll.jpg" },
+  { name: "Panner65", price: 90, img: "food/panner65.jpeg" },
+  { name: "Muschroom 65", price: 95, img: "food/mushroom65.jpg" },
+  { name: "Veg meals", price: 120, img: "food/vegmeals.jpg" },
+{ name: "Non veg meals", price: 160, img: "food/nonvegmeals.jpg" },
+{ name: "Meal maker curry", price: 95, img: "food/mealmakercurry.jpg" },
+{ name: "Plane rice", price: 30, img: "food/planerice.jpg" }
+],
+    "vaarahi Restaurant": [
+      { name: "Chiken Biriyani", price: 120, img: "food/chikenbiriyani.jpg" },
+  { name: "Chiken dum Biriyani", price: 130, img: "food/chikendum.jpg" },
+  { name: "Pot biryinai", price: 140, img: "food/potbiriyani.jpg" },
+  { name: "Mughali biryani", price: 150, img: "food/mughali.jpg" },
+  { name: "Chiken palav", price: 110, img: "food/chikenpalav.jpg" },
+  { name: "Egg fried rice", price: 90, img: "food/eggfriedrice.jpg" },
+  { name: "Fry peice Biriyani", price: 140, img: "food/chiukem fry piecde.jpg" },
+  { name: "Mutton biriyani", price: 160, img: "food/muttin.jpg" },
+  { name: "Frans biriyani", price: 135, img: "food/frans.jpg" },
+  { name: "Fish biriyani", price: 145, img: "food/fish.jpg" },
+  { name: "Ckiken 65", price: 100, img: "food/chiken65.jpg" },
+  { name: "Ckiken 555", price: 110, img: "food/chiken555.jpg" },
+  { name: "Rr chiken", price: 115, img: "food/rrchiken.jpg" },
+  { name: "Chilly chiken", price: 105, img: "food/chillychiken.jpg" },
+  { name: "dragon lolipop", price: 95, img: "food/dragonlolipop.jpg" },
+  { name: "Chiken lopipop", price: 90, img: "food/chikenlolipop.jpg" },
+  { name: "Veg Biriyani", price: 100, img: "food/vegbiriyani.jpg" },
+  { name: "Panner biriyani", price: 120, img: "food/pannerbiriyani.jpg" },
+  { name: "Zedippappu Biriyani", price: 130, img: "food/zedippappu.jpg" },
+  { name: "Veg fried rice", price: 85, img: "food/vegfriedrice.jpg" },
+  { name: "Veg noodles", price: 80, img: "food/vegnoodles.jpg" },
+  { name: "Veg manchuria", price: 90, img: "food/vegmanchuria.jpg" },
+  { name: "Ghobi fried rice", price: 95, img: "food/ghobifriedrice.jpeg" },
+  { name: "Mushroom Biriyani", price: 110, img: "food/mushroom biriani.jpg" },
+  { name: "Veg rool", price: 60, img: "food/vegroll.jpg" },
+  { name: "Panner65", price: 90, img: "food/panner65.jpeg" },{ name: "Veg meals", price: 120, img: "food/vegmeals.jpg" },
+{ name: "Non veg meals", price: 160, img: "food/nonvegmeals.jpg" },
+{ name: "Meal maker curry", price: 95, img: "food/mealmakercurry.jpg" },
+{ name: "Plane rice", price: 30, img: "food/planerice.jpg" }
+    ],
+    // Repeat for remaining restaurants
+      "Abhiruchi": [
+    { name: "Chiken Biriyani", price: 120, img: "food/chikenbiriyani.jpg" },
+  { name: "Chiken dum Biriyani", price: 130, img: "food/chikendum.jpg" },
+  { name: "Pot biryinai", price: 140, img: "food/potbiriyani.jpg" },
+  { name: "Mughali biryani", price: 150, img: "food/mughali.jpg" },
+  { name: "Chiken palav", price: 110, img: "food/chikenpalav.jpg" },
+  { name: "Egg fried rice", price: 90, img: "food/eggfriedrice.jpg" },
+  { name: "Fry peice Biriyani", price: 140, img: "food/chiukem fry piecde.jpg" },
+  { name: "Mutton biriyani", price: 160, img: "food/muttin.jpg" },
+  { name: "Frans biriyani", price: 135, img: "food/frans.jpg" },
+  { name: "Fish biriyani", price: 145, img: "food/fish.jpg" },
+  { name: "Ckiken 65", price: 100, img: "food/chiken65.jpg" },
+  { name: "Ckiken 555", price: 110, img: "food/chiken555.jpg" },
+  { name: "Rr chiken", price: 115, img: "food/rrchiken.jpg" },
+  { name: "Chilly chiken", price: 105, img: "food/chillychiken.jpg" },
+  { name: "dragon lolipop", price: 95, img: "food/dragonlolipop.jpg" },
+  { name: "Chiken lopipop", price: 90, img: "food/chikenlolipop.jpg" },
+  { name: "Veg Biriyani", price: 100, img: "food/vegbiriyani.jpg" },
+  { name: "Panner biriyani", price: 120, img: "food/pannerbiriyani.jpg" },
+  { name: "Zedippappu Biriyani", price: 130, img: "food/zedippappu.jpg" },
+  { name: "Veg fried rice", price: 85, img: "food/vegfriedrice.jpg" },
+  { name: "Veg noodles", price: 80, img: "food/vegnoodles.jpg" },
+  { name: "Veg manchuria", price: 90, img: "food/vegmanchuria.jpg" },
+  { name: "Ghobi fried rice", price: 95, img: "food/ghobifriedrice.jpeg" },
+  { name: "Mushroom Biriyani", price: 110, img: "food/mushroom biriani.jpg" },
+  { name: "Veg rool", price: 60, img: "food/vegroll.jpg" },
+  { name: "Panner65", price: 90, img: "food/panner65.jpeg" },
+  { name: "Muschroom 65", price: 95, img: "food/mushroom65.jpg" },
+  { name: "Chiken curry", price: 110, img: "food/chikencurry.jpg" },
+  { name: "Mutton curry", price: 140, img: "food/muttoncurry.jpeg" },
+  { name: "Fish fry", price: 130, img: "food/fishfry.jpeg" },
+  { name: "Mutton fry", price: 145, img: "food/muttonfry.jpg" },
+  { name: "Chiken fry", price: 115, img: "food/chikenfry.jpg" },
+  { name: "Frans curry", price: 125, img: "food/franscurry.jpg" },
+  { name: "Frans fry", price: 130, img: "food/fransfry.jpg" },
+  { name: "Mushroom curry", price: 100, img: "food/mushroom65.jpg" },
+  { name: "Panner curry", price: 105, img: "food/pannercurry.jpg" },
+  { name: "Potato curry", price: 80, img: "food/potatocurry.jpg" },
+  { name: "Egg cury", price: 90, img: "food/eggcury.jpg" },
+  { name: "Potato fry", price: 75, img: "food/potatofry.jpg" }
+  ],
+
+     "SatyaSri": [
+    { name: "Idly", price: 40, img: "food/idly.jpg" },
+{ name: "Onion dosa", price: 60, img: "food/oniondosa.jpg" },
+{ name: "Ghee dosa", price: 65, img: "food/gheedosa.jpg" },
+{ name: "Masal dosa", price: 70, img: "food/masaladosa.jpg" },
+{ name: "Egg dosa", price: 75, img: "food/eggdosa.jpg" },
+{ name: "Noodles dosa", price: 70, img: "food/newdwlolessdosa.jpg" },
+{ name: "Utapapam", price: 55, img: "food/utapapam.jpg" },
+{ name: "Puri", price: 50, img: "food/puri.jpg" },
+{ name: "Baggi", price: 40, img: "food/baggi.jpg" },
+{ name: "Vadaaa", price: 35, img: "food/vadaaa.jpg" },
+{ name: "Garii", price: 30, img: "food/garii.jpg" },
+{ name: "Pesaratu", price: 60, img: "food/pesaratu.jpg" },
+{ name: "Parotaa", price: 45, img: "food/porota.jpg" },
+{ name: "Sambar idly", price: 50, img: "food/sambaridly.jpg" },
+{ name: "Pulihara", price: 40, img: "food/pulihara.jpg" },
+{ name: "Chapati", price: 35, img: "food/chapati.jpg" },
+{ name: "Pulka", price: 30, img: "food/pulka.jpg" }
+  ],
+
+      "Padem Kodi Restaurant": [
+    { name: "Chiken Biriyani", price: 120, img: "food/chikenbiriyani.jpg" },
+  { name: "Chiken dum Biriyani", price: 130, img: "food/chikendum.jpg" },
+  { name: "Pot biryinai", price: 140, img: "food/potbiriyani.jpg" },
+  { name: "Mughali biryani", price: 150, img: "food/mughali.jpg" },
+  { name: "Chiken palav", price: 110, img: "food/chikenpalav.jpg" },
+  { name: "Egg fried rice", price: 90, img: "food/eggfriedrice.jpg" },
+  { name: "Fry peice Biriyani", price: 140, img: "food/frypiece.jpg" },
+  { name: "Muttin biriyani", price: 160, img: "food/muttin.jpg" },
+  { name: "Frans biriyani", price: 135, img: "food/frans.jpg" },
+  { name: "Fish biriyani", price: 145, img: "food/fish.jpg" },
+  { name: "Ckiken 65", price: 100, img: "food/chiken65.jpg" },
+  { name: "Ckiken 555", price: 110, img: "food/chiken555.jpg" },
+  { name: "Rr chiken", price: 115, img: "food/rrchiken.jpg" },
+  { name: "Chilly chiken", price: 105, img: "food/chillychiken.jpg" },
+  { name: "dragon lolipop", price: 95, img: "food/dragonlolipop.jpg" },
+  { name: "Chiken lopipop", price: 90, img: "food/chikenlolipop.jpg" }
+  ],
+
+      "jk Restaurant": [
+    { name: "Chiken Biriyani", price: 120, img: "food/chikenbiriyani.jpg" },
+  { name: "Chiken dum Biriyani", price: 130, img: "food/chikendum.jpg" },
+  { name: "Pot biryinai", price: 140, img: "food/potbiriyani.jpg" },
+  { name: "Mughali biryani", price: 150, img: "food/mughali.jpg" },
+  { name: "Chiken palav", price: 110, img: "food/chikenpalav.jpg" },
+  { name: "Egg fried rice", price: 90, img: "food/eggfriedrice.jpg" },
+  { name: "Fry peice Biriyani", price: 140, img: "food/frypiece.jpg" },
+  { name: "Muttin biriyani", price: 160, img: "food/muttin.jpg" },
+  { name: "Frans biriyani", price: 135, img: "food/frans.jpg" },
+  { name: "Fish biriyani", price: 145, img: "food/fish.jpg" },
+  { name: "Ckiken 65", price: 100, img: "food/chiken65.jpg" },
+  { name: "Ckiken 555", price: 110, img: "food/chiken555.jpg" },
+  { name: "Rr chiken", price: 115, img: "food/rrchiken.jpg" },
+  { name: "Chilly chiken", price: 105, img: "food/chillychiken.jpg" },
+  { name: "dragon lolipop", price: 95, img: "food/dragonlolipop.jpg" },
+  { name: "Chiken lopipop", price: 90, img: "food/chikenlolipop.jpg" }, { name: "Veg Biriyani", price: 100, img: "food/vegbiriyani.jpg" },
+  { name: "Panner biriyani", price: 120, img: "food/pannerbiriyani.jpg" },
+  { name: "Zedippappu Biriyani", price: 130, img: "food/zedippappu.jpg" }
+  ],
+
+      "Hotel Vijetha": [
+    { name: "Idly", price: 40, img: "food/idly.jpg" },
+{ name: "Onion dosa", price: 60, img: "food/oniondosa.jpg" },
+{ name: "Ghee dosa", price: 65, img: "food/gheedosa.jpg" },
+{ name: "Masal dosa", price: 70, img: "food/masaladosa.jpg" },
+{ name: "Egg dosa", price: 75, img: "food/eggdosa.jpg" },
+{ name: "Noodles dosa", price: 70, img: "food/newdwlolessdosa.jpg" },
+{ name: "Utapapam", price: 55, img: "food/utapapam.jpg" },
+{ name: "Puri", price: 50, img: "food/puri.jpg" },
+{ name: "Baggi", price: 40, img: "food/baggi.jpg" },
+{ name: "Vadaaa", price: 35, img: "food/vadaaa.jpg" },
+{ name: "Garii", price: 30, img: "food/garii.jpg" },
+{ name: "Pesaratu", price: 60, img: "food/pesaratu.jpg" },
+{ name: "Parotaa", price: 45, img: "food/porota.jpg" },
+{ name: "Sambar idly", price: 50, img: "food/sambaridly.jpg" },
+{ name: "Pulihara", price: 40, img: "food/pulihara.jpg" },
+{ name: "Chapati", price: 35, img: "food/chapati.jpg" },
+{ name: "Pulka", price: 30, img: "food/pulka.jpg" }
+  ],
+
+      "Garden Foodex": [
+    { name: "Chiken Biriyani", price: 120, img: "food/chikenbiriyani.jpg" },
+  { name: "Chiken dum Biriyani", price: 130, img: "food/chikendum.jpg" },
+  { name: "Pot biryinai", price: 140, img: "food/potbiriyani.jpg" },
+  { name: "Mughali biryani", price: 150, img: "food/mughali.jpg" },
+  { name: "Chiken palav", price: 110, img: "food/chikenpalav.jpg" },
+  { name: "Egg fried rice", price: 90, img: "food/eggfriedrice.jpg" },
+  { name: "Fry peice Biriyani", price: 140, img: "food/frypiece.jpg" },
+  { name: "Muttin biriyani", price: 160, img: "food/muttin.jpg" },
+  { name: "Frans biriyani", price: 135, img: "food/frans.jpg" },
+  { name: "Fish biriyani", price: 145, img: "food/fish.jpg" },
+  { name: "Ckiken 65", price: 100, img: "food/chiken65.jpg" },
+  { name: "Ckiken 555", price: 110, img: "food/chiken555.jpg" },
+  { name: "Rr chiken", price: 115, img: "food/rrchiken.jpg" },
+  { name: "Chilly chiken", price: 105, img: "food/chillychiken.jpg" },
+  { name: "dragon lolipop", price: 95, img: "food/dragonlolipop.jpg" },
+  { name: "Chiken lopipop", price: 90, img: "food/chikenlolipop.jpg" }, { name: "Veg Biriyani", price: 100, img: "food/vegbiriyani.jpg" },
+  { name: "Panner biriyani", price: 120, img: "food/pannerbiriyani.jpg" },
+  { name: "Zedippappu Biriyani", price: 130, img: "food/zedippappu.jpg" }
+  ],
+
+     "Mubarak": [
+    { name: "Chiken Biriyani", price: 120, img: "food/chikenbiriyani.jpg" },
+  { name: "Chiken dum Biriyani", price: 130, img: "food/chikendum.jpg" },
+  { name: "Pot biryinai", price: 140, img: "food/potbiriyani.jpg" },
+  { name: "Mughali biryani", price: 150, img: "food/mughali.jpg" },
+  { name: "Chiken palav", price: 110, img: "food/chikenpalav.jpg" },
+  { name: "Egg fried rice", price: 90, img: "food/eggfriedrice.jpg" },
+  { name: "Fry peice Biriyani", price: 140, img: "food/frypiece.jpg" },
+  { name: "Muttin biriyani", price: 160, img: "food/muttin.jpg" },
+  { name: "Frans biriyani", price: 135, img: "food/frans.jpg" },
+  { name: "Fish biriyani", price: 145, img: "food/fish.jpg" },
+  { name: "Ckiken 65", price: 100, img: "food/chiken65.jpg" },
+  { name: "Ckiken 555", price: 110, img: "food/chiken555.jpg" },
+  { name: "Rr chiken", price: 115, img: "food/rrchiken.jpg" },
+  { name: "Chilly chiken", price: 105, img: "food/chillychiken.jpg" },
+  { name: "dragon lolipop", price: 95, img: "food/dragonlolipop.jpg" },
+  { name: "Chiken lopipop", price: 90, img: "food/chikenlolipop.jpg" }, 
+  { name: "Veg Biriyani", price: 100, img: "food/vegbiriyani.jpg" },
+  { name: "Panner biriyani", price: 120, img: "food/pannerbiriyani.jpg" },
+  { name: "Zedippappu Biriyani", price: 130, img: "food/zedippappu.jpg" },
+  { name: "Veg meals", price: 120, img: "food/vegmeals.jpg" },
+{ name: "Non veg meals", price: 160, img: "food/nonvegmeals.jpg" },
+{ name: "Meal maker curry", price: 95, img: "food/mealmakercurry.jpg" },
+{ name: "Plane rice", price: 30, img: "food/planerice.jpg" }
+  ],
+
+      "kumar Restaurant": [
+    { name: "Chiken Biriyani", price: 120, img: "food/chikenbiriyani.jpg" },
+  { name: "Chiken dum Biriyani", price: 130, img: "food/chikendum.jpg" },
+  { name: "Pot biryinai", price: 140, img: "food/potbiriyani.jpg" },
+  { name: "Mughali biryani", price: 150, img: "food/mughali.jpg" },
+  { name: "Chiken palav", price: 110, img: "food/chikenpalav.jpg" },
+  { name: "Egg fried rice", price: 90, img: "food/eggfriedrice.jpg" },
+  { name: "Fry peice Biriyani", price: 140, img: "food/frypiece.jpg" },
+  { name: "Muttin biriyani", price: 160, img: "food/muttin.jpg" },
+  { name: "Frans biriyani", price: 135, img: "food/frans.jpg" },
+  { name: "Fish biriyani", price: 145, img: "food/fish.jpg" },
+  { name: "Ckiken 65", price: 100, img: "food/chiken65.jpg" },
+  { name: "Ckiken 555", price: 110, img: "food/chiken555.jpg" },
+  { name: "Rr chiken", price: 115, img: "food/rrchiken.jpg" },
+  { name: "Chilly chiken", price: 105, img: "food/chillychiken.jpg" },
+  { name: "dragon lolipop", price: 95, img: "food/dragonlolipop.jpg" },
+  { name: "Chiken lopipop", price: 90, img: "food/chikenlolipop.jpg" }
+  ],
+
+     "ShankarVilas Tifins": [
+    { name: "Idly", price: 40, img: "food/idly.jpg" },
+{ name: "Onion dosa", price: 60, img: "food/oniondosa.jpg" },
+{ name: "Ghee dosa", price: 65, img: "food/gheedosa.jpg" },
+{ name: "Masal dosa", price: 70, img: "food/masala4.jpeg" },
+{ name: "Onion dosa", price: 60, img: "food/onion3.jpeg" },
+{ name: "Egg dosa", price: 75, img: "food/eggdosa.jpg" },
+{ name: "Noodles dosa", price: 70, img: "food/newdwlolessdosa.jpg" },
+{ name: "Utapapam", price: 55, img: "food/utapapam.jpg" },
+{ name: "Puri", price: 50, img: "food/puri.jpg" },
+{ name: "Baggi", price: 40, img: "food/baggi.jpg" },
+{ name: "Vadaaa", price: 35, img: "food/vadaaa.jpg" },
+{ name: "Garii", price: 30, img: "food/garii.jpg" },
+{ name: "Pesaratu", price: 60, img: "food/pesaratu.jpg" },
+{ name: "Parotaa", price: 45, img: "food/parotaa.jpg" },
+{ name: "Sambar idly", price: 50, img: "food/sambaridly.jpg" },
+{ name: "Pulihara", price: 40, img: "food/pulihara.jpg" },
+{ name: "Chapati", price: 35, img: "food/chapati.jpg" },
+{ name: "Pulka", price: 30, img: "food/pulka.jpg" }
+  ],
+
+      "Spicy Restaurant": [
+    { name: "Chiken Biriyani", price: 120, img: "food/chikenbiriyani.jpg" },
+  { name: "Chiken dum Biriyani", price: 130, img: "food/chikendum.jpg" },
+  { name: "Pot biryinai", price: 140, img: "food/potbiriyani.jpg" },
+  { name: "Mughali biryani", price: 150, img: "food/mughali.jpg" },
+  { name: "Chiken palav", price: 110, img: "food/chikenpalav.jpg" },
+  { name: "Egg fried rice", price: 90, img: "food/eggfriedrice.jpg" },
+  { name: "Fry peice Biriyani", price: 140, img: "food/frypiece.jpg" },
+  { name: "Muttin biriyani", price: 160, img: "food/muttin.jpg" },
+  { name: "Frans biriyani", price: 135, img: "food/frans.jpg" },
+  { name: "Fish biriyani", price: 145, img: "food/fish.jpg" },
+  { name: "Ckiken 65", price: 100, img: "food/chiken65.jpg" },
+  { name: "Ckiken 555", price: 110, img: "food/chiken555.jpg" },
+  { name: "Rr chiken", price: 115, img: "food/rrchiken.jpg" },
+  { name: "Chilly chiken", price: 105, img: "food/chillychiken.jpg" },
+  { name: "dragon lolipop", price: 95, img: "food/dragonlolipop.jpg" },
+  { name: "Chiken lopipop", price: 90, img: "food/chikenlolipop.jpg" },
+  { name: "Chiken curry", price: 110, img: "food/chikencurry.jpg" },
+  { name: "Fish fry", price: 130, img: "food/fishfry.jpeg" },
+  { name: "Mutton fry", price: 145, img: "food/muttonfry.jpg" },
+  { name: "Chiken fry", price: 115, img: "food/chikenfry.jpg" },
+  { name: "Frans curry", price: 125, img: "food/franscurry.jpg" },
+  { name: "Frans fry", price: 130, img: "food/fransfry.jpg" },
+  { name: "Panner curry", price: 105, img: "food/pannercurry.jpg" },
+  { name: "Potato curry", price: 80, img: "food/potatocurry.jpg" },
+  { name: "Egg cury", price: 90, img: "food/eggcury.jpg" },
+  { name: "Potato fry", price: 75, img: "food/potatofry.jpg" }
+
+  ],
+
+      "Sangeeth Restaurant": [
+    { name: "Chiken Biriyani", price: 120, img: "food/chikenbiriyani.jpg" },
+  { name: "Chiken dum Biriyani", price: 130, img: "food/chikendum.jpg" },
+  { name: "Pot biryinai", price: 140, img: "food/potbiriyani.jpg" },
+  { name: "Mughali biryani", price: 150, img: "food/mughali.jpg" },
+  { name: "Chiken palav", price: 110, img: "food/chikenpalav.jpg" },
+  { name: "Egg fried rice", price: 90, img: "food/eggfriedrice.jpg" },
+  { name: "Fry peice Biriyani", price: 140, img: "food/frypiece.jpg" },
+  { name: "Muttin biriyani", price: 160, img: "food/muttin.jpg" },
+  { name: "Frans biriyani", price: 135, img: "food/frans.jpg" },
+  { name: "Fish biriyani", price: 145, img: "food/fish.jpg" },
+  { name: "Ckiken 65", price: 100, img: "food/chiken65.jpg" },
+  { name: "Ckiken 555", price: 110, img: "food/chiken555.jpg" },
+  { name: "Rr chiken", price: 115, img: "food/rrchiken.jpg" },
+  { name: "Chilly chiken", price: 105, img: "food/chillychiken.jpg" },
+  { name: "dragon lolipop", price: 95, img: "food/dragonlolipop.jpg" },
+  { name: "Chiken lopipop", price: 90, img: "food/chikenlolipop.jpg" }
+  ],
+
+     "Hungry Harbour": [
+   { name: "Chiken Biriyani", price: 120, img: "food/chikenbiriyani.jpg" },
+  { name: "Chiken dum Biriyani", price: 130, img: "food/chikendum.jpg" },
+  { name: "Pot biryinai", price: 140, img: "food/potbiriyani.jpg" },
+  { name: "Mughali biryani", price: 150, img: "food/mughali.jpg" },
+  { name: "Chiken palav", price: 110, img: "food/chikenpalav.jpg" },
+  { name: "Egg fried rice", price: 90, img: "food/eggfriedrice.jpg" },
+  { name: "Fry peice Biriyani", price: 140, img: "food/frypiece.jpg" },
+  { name: "Muttin biriyani", price: 160, img: "food/muttin.jpg" },
+  { name: "Frans biriyani", price: 135, img: "food/frans.jpg" },
+  { name: "Fish biriyani", price: 145, img: "food/fish.jpg" },
+  { name: "Ckiken 65", price: 100, img: "food/chiken65.jpg" },
+  { name: "Ckiken 555", price: 110, img: "food/chiken555.jpg" },
+  { name: "Rr chiken", price: 115, img: "food/rrchiken.jpg" },
+  { name: "Chilly chiken", price: 105, img: "food/chillychiken.jpg" },
+  { name: "dragon lolipop", price: 95, img: "food/dragonlolipop.jpg" },
+  { name: "Chiken lopipop", price: 90, img: "food/chikenlolipop.jpg" },
+  { name: "Veg Biriyani", price: 100, img: "food/vegbiriyani.jpg" },
+  { name: "Panner biriyani", price: 120, img: "food/pannerbiriyani.jpg" },
+  { name: "Zedippappu Biriyani", price: 130, img: "food/zedippappu.jpg" },
+  { name: "Veg fried rice", price: 85, img: "food/vegfriedrice.jpg" },
+  { name: "Veg noodles", price: 80, img: "food/vegnoodles.jpg" },
+  { name: "Veg manchuria", price: 90, img: "food/vegmanchuria.jpg" },
+  { name: "Ghobi fried rice", price: 95, img: "food/ghobifriedrice.jpeg" },
+  { name: "Mushroom Biriyani", price: 110, img: "food/mushroom biriani.jpg" },
+  { name: "Veg rool", price: 60, img: "food/vegroll.jpg" },
+  { name: "Panner65", price: 90, img: "food/panner65.jpeg" },
+  { name: "Muschroom 65", price: 95, img: "food/mushroom65.jpg" },{ name: "Chiken curry", price: 110, img: "food/chikencurry.jpg" },
+  { name: "Mutton curry", price: 140, img: "food/muttoncurry.jpeg" },
+
+  { name: "Fish fry", price: 130, img: "food/fishfry.jpeg" },
+  { name: "Mutton fry", price: 145, img: "food/muttonfry.jpg" },
+  { name: "Chiken fry", price: 115, img: "food/chikenfry.jpg" },
+  { name: "Frans curry", price: 125, img: "food/franscurry.jpg" },
+  { name: "Frans fry", price: 130, img: "food/fransfry.jpg" }
+  ],
+
+     "Madina Veg& Nonveg Restaurant": [
+    { name: "Veg Biriyani", price: 100, img: "food/vegbiriyani.jpg" },
+  { name: "Panner biriyani", price: 120, img: "food/pannerbiriyani.jpg" },
+  { name: "Zedippappu Biriyani", price: 130, img: "food/zedippappu.jpg" },
+  { name: "Veg fried rice", price: 85, img: "food/vegfriedrice.jpg" },
+  { name: "Veg noodles", price: 80, img: "food/vegnoodles.jpg" },
+  { name: "Veg manchuria", price: 90, img: "food/vegmanchuria.jpg" },
+  { name: "Ghobi fried rice", price: 95, img: "food/ghobifriedrice.jpeg" },
+  { name: "Veg rool", price: 60, img: "food/vegroll.jpg" },
+  { name: "Panner65", price: 90, img: "food/panner65.jpeg" },
+  { name: "Muschroom 65", price: 95, img: "food/mushroom65.jpg" },
+   { name: "Chiken curry", price: 110, img: "food/chikencurry.jpg" },
+  { name: "Mutton curry", price: 140, img: "food/muttoncurry.jpeg" },
+  { name: "Fish fry", price: 130, img: "food/fishfry.jpeg" },
+  { name: "Chiken fry", price: 115, img: "food/chikenfry.jpg" },
+  { name: "Frans curry", price: 125, img: "food/franscurry.jpg" },
+  { name: "Frans fry", price: 130, img: "food/fransfry.jpg" },
+  { name: "Panner curry", price: 105, img: "food/pannercurry.jpg" },
+  { name: "Potato curry", price: 80, img: "food/potatocurry.jpg" },
+  { name: "Egg cury", price: 90, img: "food/eggcury.jpg" },
+  { name: "Potato fry", price: 75, img: "food/potatofry.jpg" },{ name: "Chiken Biriyani", price: 120, img: "food/chikenbiriyani.jpg" },
+  { name: "Chiken dum Biriyani", price: 130, img: "food/chikendum.jpg" },
+  { name: "Pot biryinai", price: 140, img: "food/potbiriyani.jpg" },
+  { name: "Mughali biryani", price: 150, img: "food/mughali.jpg" },
+  { name: "Chiken palav", price: 110, img: "food/chikenpalav.jpg" },
+  { name: "Egg fried rice", price: 90, img: "food/eggfriedrice.jpg" },
+  { name: "Fry peice Biriyani", price: 140, img: "food/frypiece.jpg" },
+  { name: "Muttin biriyani", price: 160, img: "food/muttin.jpg" },
+  { name: "Frans biriyani", price: 135, img: "food/frans.jpg" },
+  { name: "Fish biriyani", price: 145, img: "food/fish.jpg" },
+  ]
+
+  };
+
+  const selectedItems = restaurantItems[name] || [];
+
+  for (let i = 0; i < selectedItems.length; i++) {
+    const itemData = selectedItems[i];
+    const id = `${name}-${itemData.name.replace(/\s+/g, '')}`;
+    const item = document.createElement("div");
+    item.className = "item-card";
+    item.innerHTML = `
+  <img src="${itemData.img}" />
+  <h5>${itemData.name}</h5>
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <small>₹${itemData.price} | ⭐ ${4 + (i % 2)}</small>
+  </div>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+  <div class="qty-controls" style="display: flex; gap: 8px;">
+    <button onclick="decreaseQty('${id}')">–</button>
+    <span id="${id}-qty">${cart[id]?.qty || 0}</span>
+    <button onclick="increaseQty('${id}', '${itemData.name}', '${itemData.img}', ${itemData.price})">+</button>
+  </div>
+  <button onclick="addToCart('${id}', '${itemData.name}', '${itemData.img}', ${itemData.price})"
+    style="background: none; border: none; font-size: 20px; cursor: pointer;" title="Add to Cart">
+    🛒
+  </button>
+</div>
+  <button class="order-btn" onclick="orderNow('${id}', '${name}', ${itemData.price})">Order</button>
+`;
+
+
+    item.style.animationDelay = `${i * 0.05}s`;
+items.appendChild(item);
+
+  }
+  document.getElementById("restaurant-popup").style.backgroundColor = popupColors[name] || "#ffffff";
+  const popup = document.getElementById("restaurant-popup");
+popup.classList.add("show");
+popup.style.display = "block";
+
+  
+}
+
+
+  function closePopup() {
+  const popup = document.getElementById("restaurant-popup");
+  popup.classList.remove("show");
+  popup.style.display = "none";
+
+  // Re-trigger restaurant animations
+  reAnimateRestaurants();
+}
+
+
+  function increaseQty(id, name, img, price) {
+  if (!cart[id]) {
+    cart[id] = { name, img, price, qty: 1 };
+  } else {
+    cart[id].qty++;
+  }
+
+  document.getElementById(`${id}-qty`).textContent = cart[id].qty;
+  updateCartBadge();
+
+  // ✅ Only show toast when item is newly added (first time becomes 1)
+  if (cart[id].qty === 1) {
+    showToast();
+  }
+}
+
+
+  function decreaseQty(id) {
+    if (cart[id]) {
+      cart[id].qty--;
+      if (cart[id].qty <= 0) {
+        delete cart[id];
+      }
+      document.getElementById(`${id}-qty`).textContent = cart[id]?.qty || 0;
+      updateCartBadge();
+    }
+  }
+
+  function orderNow(itemId, restaurant, price) {
+    const item = {
+      id: itemId,
+      restaurant,
+      price,
+      name: itemId.split("-").pop()
+    };
+    localStorage.setItem("orderItem", JSON.stringify(item));
+    window.location.href = "order.html";
+  }
+const bgColors = ["#e6f2ff", "#ffe6e6", "#e6ffe6", "#fff0e6", "#f0e6ff", "#ffffcc", "#e6ffff"];
+let currentColorIndex = 0;
+
+setInterval(() => {
+  document.body.style.backgroundColor = bgColors[currentColorIndex];
+  currentColorIndex = (currentColorIndex + 1) % bgColors.length;
+}, 3000);
+function showToast() {
+  const toast = document.getElementById("toast");
+  toast.style.display = "block";
+
+  // Hide after 3 seconds
+  setTimeout(() => {
+    toast.style.display = "none";
+  }, 3000);
+}
+
+function viewCartFromToast() {
+  document.getElementById("toast").style.display = "none";
+
+  const totalItems = Object.values(cart).reduce((sum, item) => sum + item.qty, 0);
+  if (totalItems === 0) {
+    return; // 🚫 Do nothing if cart is empty
+  }
+
+  closePopup();
+
+  const modal = document.getElementById("cart-modal");
+  modal.style.display = "block";
+  renderCart();
+
+  setTimeout(() => {
+    modal.style.display = "none";
+  }, 3000);
+}
+ 
+
+function filterPopupItems() {
+  const query = document.getElementById("popup-search").value.toLowerCase();
+  const items = document.querySelectorAll("#popup-items .item-card");
+
+  items.forEach(item => {
+    const name = item.querySelector("h5").textContent.toLowerCase();
+    item.style.display = name.includes(query) ? "flex" : "none";
+  });
+}
+const popupColors = {
+  "Chittori Restaurant": "#ffe6e6",
+  "vaarahi Restaurant": "#e6ffe6",
+  "Abhiruchi": "#ffe6cc",
+  "SatyaSri": "#f0e6ff",
+  "Padem Kodi Restaurant": "#ccf2ff",
+  "jk Restaurant": "#fff0e6",
+  "Hotel Vijetha": "#f9f9cc",
+  "Garden Foodex": "#d9f2e6",
+  "Mubarak": "#ffebcc",
+  "kumar Restaurant": "#e6ccff",
+  "ShankarVilas Tifins": "#ccffff",
+  "Spicy Restaurant": "#ffd9ec",
+  "Sangeeth Restaurant": "#d6f5d6",
+  "Hungry Harbour": "#e6f2ff",
+  "Madina Veg& Nonveg Restaurant": "#ffe0b3"
+};
+
+
+function reAnimateRestaurants() {
+  const containers = document.querySelectorAll(".restaurant-container");
+  containers.forEach((el, i) => {
+    el.classList.remove("visible");
+
+    // Force reflow to restart animation
+    void el.offsetWidth;
+
+    // Re-add visible with staggered delay
+    setTimeout(() => {
+      el.classList.add("visible");
+    }, i * 100); // 0.1s stagger per container
+  });
+}
+
+
+
+
+function addToCart(id, name, img, price) {
+  if (!cart[id]) {
+    cart[id] = { name, img, price, qty: 1 };
+  } else {
+    cart[id].qty++;
+  }
+
+  document.getElementById(`${id}-qty`).textContent = cart[id].qty;
+  updateCartBadge();
+  showToast();
+}
+function toggleHeart(button) {
+    button.classList.toggle('favorited');
+    button.textContent = button.classList.contains('favorited') ? '♥' : '♡';
+  }
+
+
+  renderRestaurants();
+  updateCartBadge();
+</script>
+<div id="toast" style="
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 30px;
+  display: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  z-index: 5000;
+  font-size: 14px;
+  white-space: nowrap;
+  display: none;
+  align-items: center;
+  gap: 10px;
+">
+  Added to cart
+  <button onclick="viewCartFromToast()" style="background: white; color: #007bff; border: none; margin-left: 10px; padding: 5px 10px; border-radius: 20px; cursor: pointer;">View Cart</button>
+</div>
+
+
+
+</body>
+</html>

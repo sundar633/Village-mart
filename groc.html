@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Village Mart</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #e6f2ff;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    .header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+body {
+  padding-top: 80px; /* Adjust this to prevent content being hidden under the fixed header */
+}
+
+    .header h1 {
+      font-size: 24px;
+      margin: 0;
+      font-weight: 600;
+    }
+    .back-btn {
+      position: absolute;
+      left: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .back-btn img { width: 28px; height: 28px; }
+
+    .bottom-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: #fff;
+      box-shadow: 0 -1px 3px rgba(0,0,0,0.05);
+      font-size: 16px;
+      position: relative;
+    }
+    .location {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+   #search-input {
+  margin-top: 5px;
+  padding: 6px 30px 6px 35px; /* space for icon */
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 200px;
+  background: #fff url('https://img.icons8.com/ios-filled/20/000000/search--v1.png') no-repeat 10px center;
+  background-size: 16px 16px;
+}
+
+
+    .location img { width: 24px; }
+    .cart-btn {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+    .cart-btn img { width: 28px; }
+    .cart-count {
+      position: absolute;
+      top: -5px;
+      right: -10px;
+      background: red;
+      color: white;
+      font-size: 13px;
+      border-radius: 50%;
+      padding: 3px 7px;
+    }
+    .empty-cart-msg {
+      font-size: 14px;
+      color: #555;
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 6px 10px;
+      border-radius: 6px;
+      position: absolute;
+      top: 40px;
+      right: 0;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      user-select: none;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1100;
+    }
+    .empty-cart-msg.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .category-section { padding: 20px; }
+    .category-section h2 {
+      margin-bottom: 3px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .category-scroll {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding-bottom: 15px;
+    }
+    .category-icon {
+      text-align: center;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .circle-img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin-bottom: 6px;
+      background-color: #b3daff;
+    }
+    .circle-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .category-icon span {
+      font-size: 13px;
+      font-weight: 500;
+      display: block;
+    }
+    .category-icon.active {
+  position: relative;
+}
+
+.category-icon.active::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 4px;
+  background-color: #87958f; /* You can customize this color */
+  border-radius: 2px;
+}
+
+
+    .product-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      padding: 20px;
+    }
+    .product-card {
+      background: rgba(255, 255, 255, 0.7); 
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease;
+      cursor: pointer;
+    }
+    .product-card:active {
+      transform: scale(0.96);
+    }
+    .product-card img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+    .product-card h3 {
+      font-size: 16px;
+      margin: 10px 0 5px;
+      font-weight: 600;
+    }
+    .product-card p {
+      font-size: 13px;
+      margin: 4px 0;
+    }
+
+    .actions {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .add-to-cart-btn, .order-now-btn {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .order-now-btn {
+      background-color: #28a745;
+    }
+
+    body.cat-all {
+  background-color: #e6f2ff;
+}
+
+body.cat-cat1 { background-color: #ac8d63; }     /* Soaps */
+body.cat-cat2 { background-color: #7f49a2; }     /* SkinCare */
+body.cat-cat3 { background-color: #55a27e; }     /* BodyCare */
+body.cat-cat4 { background-color: #5d77ab; }     /* DailyNeeds */
+body.cat-cat5 { background-color: #82656f; }     /* Perfumes */
+body.cat-cat6 { background-color: #dec825; }     /* Oil & Ghee */
+body.cat-cat7 { background-color: #2ccbcb; }     /* Liquids */
+body.cat-cat8 { background-color: #9cb351; }     /* DryFruits */
+body.cat-cat9 { background-color: #43f3f3; }     /* IceCreams */
+body.cat-cat10 { background-color: #9b7946; }    /* PujaNeeds */
+body.cat-cat11 { background-color: #aa5179; }    /* Chocolates */
+body.cat-cat12 { background-color: #4e6890; }    /* FaceWash */
+
+    .cart-modal {
+      position: fixed;
+      top: 60px;
+      right: 20px;
+      width: 300px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 15px;
+      z-index: 999;
+      display: none;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .cart-item img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+    .cart-item-info {
+      flex: 1;
+    }
+    .cart-item-info p {
+      margin: 2px 0;
+      font-size: 13px;
+      font-weight: 400;
+    }
+    .remove-btn {
+      background: red;
+      color: white;
+      border: none;
+      padding: 4px 6px;
+      font-size: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .place-order {
+      margin-top: 10px;
+      background: #ff9900;
+      color: white;
+      border: none;
+      padding: 8px;
+      width: 100%;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    #product-popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    #product-popup .popup-content {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 90%;
+      width: 360px;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    #product-popup .popup-content button.close-btn {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: white;
+      border: none;
+      font-size: 24px;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    #popup-highlights {
+      font-size: 13px;
+      padding-left: 20px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    /* Center error container */
+    #error-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #ff4d4d;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(255,0,0,0.5);
+      font-weight: 600;
+      font-size: 16px;
+      display: none;
+      z-index: 1200;
+      max-width: 80%;
+      text-align: center;
+      user-select: none;
+    }
+    .qty-btn {
+  font-size: 14px;
+  background: #eee;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.sticky-category-bar {
+  position: sticky;
+  top: 80px; /* just below header */
+  z-index: 998;
+  background:  transparent; /* ✅ white background */
+  padding: 10px 0 10px 10px;
+  
+}
+
+.category-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  scrollbar-width: none; /* Firefox */
+}
+.category-scroll::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+@keyframes slideUpFade {
+  0% {
+    opacity: 0;
+    transform: translateY(40px); /* start from below */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.product-card {
+  opacity: 0;
+  animation: slideUpFade 0.4s ease forwards;
+}
+@keyframes popupFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInBackdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popupZoomIn {
+  0% {
+    transform: scale(0.9) translateY(20px);
+    opacity: 0;
+    filter: blur(3px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+#product-popup {
+  animation: fadeInBackdrop 0.25s ease forwards;
+  backdrop-filter: blur(2px); /* subtle blur behind popup */
+}
+
+#product-popup .popup-content {
+  animation: popupZoomIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+
+
+
+
+  </style>
+</head>
+<body>
+  <div class="header">
+  <button class="back-btn" onclick="goBack()">
+    <img src="https://img.icons8.com/ios-filled/50/000000/back.png" alt="Back">
+  </button>
+  <h1>Village Mart</h1>
+  <div class="cart-btn" onclick="toggleCart()">
+    <img src="https://img.icons8.com/ios-filled/50/000000/shopping-cart.png" alt="Cart">
+    <div class="cart-count" id="cart-count">0</div>
+    <div class="empty-cart-msg" id="empty-cart-msg">No items available</div>
+  </div>
+</div>
+
+
+  <div class="bottom-bar">
+    <div class="location">
+      <img src="https://img.icons8.com/ios-filled/50/000000/marker.png" alt="Location">
+      
+      <span id="display-location">Detecting location...</span>
+      <input type="text" id="search-input" placeholder="Search products..." />
+
+    </div>
+    
+  </div>
+
+  <!-- Product Popup -->
+  <div id="product-popup">
+    <div class="popup-content">
+      <button class="close-btn" onclick="closeProductPopup()">&#8595;</button>
+      <img id="popup-img" src="" alt="" style="width:100%; height:180px; object-fit:cover; border-radius:10px; margin-bottom:10px">
+      <h3 id="popup-name"></h3>
+      <p id="popup-price" style="font-weight:600"></p>
+      <p id="popup-desc" style="font-size:14px; margin-bottom:10px"></p>
+      <ul id="popup-highlights"></ul>
+      <div class="actions">
+        <button id="popup-cart" class="add-to-cart-btn">Add to Cart</button>
+        <button class="order-now-btn" id="popup-order-now">Order Now</button>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="cart-modal" id="cart-modal"></div>
+
+  <!-- Error Container -->
+  <div id="error-container"></div>
+
+  <section class="category-section">
+  <h2>Groceries</h2>
+</section>
+
+<!-- ✅ Sticky Category Row Only -->
+<div class="sticky-category-bar">
+  <div class="category-scroll" id="category-list"></div>
+</div>
+
+
+  <section class="product-list" id="product-list"></section>
+
+  <script>
+  function goBack() {
+    window.location.href = 'index.html';
+  }
+
+  function detectLocation() {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+            .then(res => res.json())
+            .then(data => {
+              const village = data.address.village || data.address.suburb || data.address.town || data.address.city || "Unknown";
+              const state = data.address.state || "Unknown State";
+              document.getElementById("display-location").textContent = `${village}, ${state}`;
+            })
+            .catch(() => {
+              showError("Error fetching location details");
+              document.getElementById("display-location").textContent = "Location unavailable";
+            });
+        },
+        () => {
+          document.getElementById("display-location").textContent = "Location unavailable";
+        }
+      );
+    } else {
+      document.getElementById("display-location").textContent = "Geolocation not supported";
+    }
+  }
+
+  const categories = [
+    { key: 'all', label: 'All', img: 'all.jpg' },
+    { key: 'cat1', label: 'Soaps', img: 'soap.jpg' },
+    { key: 'cat2', label: 'SkinCare', img: 'skin.jpg' },
+    { key: 'cat3', label: 'BodyCare', img: 'body.jpg' },
+    { key: 'cat4', label: 'DailyNeeds', img: 'daily.jpg' },
+    { key: 'cat5', label: 'Perfumes', img: 'perfumes.jpg' },
+    { key: 'cat6', label: 'Oil&Ghee', img: 'oils.jpg' },
+    { key: 'cat7', label: 'Liquids', img: 'liq.jpg' },
+    { key: 'cat8', label: 'DryFruits', img: 'dry.jpg' },
+    { key: 'cat9', label: 'IceCreams', img: 'ice.jpg' },
+    { key: 'cat10', label: 'PujaNeeds', img: 'puja.jpg' },
+    { key: 'cat11', label: 'Chocolates', img: 'choco.jpg' },
+    { key: 'cat12', label: 'FaceWash', img: 'face.jpg' }
+  ];
+
+  const productImages = {
+    cat1: ['soap1.jpg', 'soap2.jpg', 'soap3.jpg', 'soap4.jpg', 'soap5.jpg', 'soap6.jpg','soap7.jpg','soap8.jpg','soap9.jpg','soap10.jpg'],
+   cat2: ['skin1.jpg', 'skin2.jpg', 'skin3.jpg', 'skin4.jpg', 'skin5.jpg', 'skin6.jpg', 'skin7.jpg', 'skin8.jpg', 'skin9.jpg', 'skin10.jpg', 'skin11.jpg', 'skin12.png'],
+cat3: ['body1.png', 'body2.jpg', 'body3.jpg', 'body4.jpg', 'body5.jpg', 'body6.jpg', ],
+cat4: ['groom1.jpg', 'groom2.jpg', 'groom3.jpg', 'groom4.jpg', 'groom5.jpg', 'groom6.jpg', 'groom7.jpg', 'groom8.jpg', 'groom9.jpg', 'groom10.jpg', 'groom11.jpg', 'groom12.jpg', 'groom13.jpg', 'groom14.jpg' ],
+cat5: ['perf1.jpg', 'perf2.jpg', 'perf3.jpg', 'perf4.jpg', 'perf5.jpg', 'perf6.jpg', 'perf7.jpg', 'perf8.jpg', 'perf9.jpg', 'perf10.jpg'],
+cat6: ['oil1.jpg', 'oil2.jpg', 'oil3.jpg', 'oil4.jpg', 'oil5.jpg', 'oil6.jpg', 'oil7.jpg', 'oil8.jpg'],
+cat7: ['liq1.jpg', 'liq2.jpg', 'liq3.jpg', 'liq4.jpg', 'liq5.jpg', 'liq6.jpg', 'liq7.jpg', 'liq8.jpg', 'liq9.jpg', 'liq10.jpg', 'liq11.jpg', 'liq12.jpg', 'liq13.jpg', 'liq14.jpg', 'liq15.jpg', 'liq16.jpg', 'liq17.jpg', 'liq18.jpg'],
+cat8: ['dry1.jpg', 'dry2.jpg', 'dry3.jpg', 'dry4.jpg', 'dry5.jpg', 'dry6.jpg', 'dry7.jpg', 'dry8.jpg', 'dry9.jpg', 'dry10.jpg'],
+cat9: ['ice1.jpg', 'ice2.jpg', 'ice3.jpg', 'ice4.jpg', 'ice5.jpg', 'ice6.jpg', 'ice7.jpg', 'ice8.jpg', 'ice9.jpg', 'ice10.jpg', 'ice11.jpg', 'ice12.jpg'],
+cat10: ['puja1.jpg', 'puja2.png', 'puja3.jpg', 'puja4.jpg', 'puja5.jpg', 'puja6.jpg', 'puja6.jpg', 'puja7.jpg', 'puja8.jpg', 'puja9.jpg', 'puja10.jpg', 'puja11.jpg', 'puja12.jpg'],
+cat11: ['choc1.jpg', 'choc2.jpg', 'choc3.jpg', 'choc4.jpg', 'choc5.jpg', 'choc6.jpg', 'choc7.jpg', 'choc8.jpg', 'choc9.jpg', 'choc10.jpg', 'choc11.jpg', 'choc12.jpg'],
+cat12: ['face1.jpg', 'face2.jpg', 'face3.jpg', 'face4.jpg', 'face5.jpg', 'face6.jpg', 'face7.jpg', 'face8.jpg', 'face9.jpg', 'face10.jpg', 'face11.jpg', 'face12.jpg', 'face13.jpg', 'face14.jpg', 'face15.jpg', 'face16.jpg']
+
+  };
+  const productDetails = {
+  cat1: [
+    { name: "Neem Herbal Soap", price: 45 },
+    { name: "Aloe Vera Bath Bar", price: 55 },
+    { name: "Sandalwood Body Soap", price: 60 },
+    { name: "Rose Fragrance Soap", price: 50 },
+    { name: "Charcoal Detox Bar", price: 65 },
+    { name: "Lavender Moisture Soap", price: 70 },
+    { name: "Goat Milk Soap", price: 75 },
+    { name: "Lemon Fresh Soap", price: 40 },
+    { name: "Mint Cool Soap", price: 45 },
+    { name: "Turmeric Healing Soap", price: 60 }
+  ],
+  cat2: [
+    { name: "Vitamin C Face Serum", price: 180 },
+    { name: "Hydrating Day Cream", price: 250 },
+    { name: "Anti-aging Night Cream", price: 320 },
+    { name: "SPF 50 Sunscreen Gel", price: 150 },
+    { name: "Aloe Moisturizing Lotion", price: 120 },
+    { name: "Face Brightening Gel", price: 200 },
+    { name: "Retinol Skin Repair", price: 280 },
+    { name: "Under Eye Cream", price: 210 },
+    { name: "Charcoal Face Pack", price: 170 },
+    { name: "Acne Control Gel", price: 190 },
+    { name: "Glow Enhancer Serum", price: 260 },
+    { name: "Oil Control Toner", price: 140 }
+  ],
+  cat3: [
+    { name: "Body Scrub", price: 120 },
+    { name: "Shea Body Lotion", price: 140 },
+    { name: "Body Yogurt", price: 150 },
+    { name: "Massage Oil", price: 160 },
+    { name: "Cocoa Butter Lotion", price: 170 },
+    { name: "Body Wash Gel", price: 130 }
+  ],
+  cat4: [
+    { name: "Toothpaste", price: 45 },
+    { name: "Toothbrush Set", price: 60 },
+    { name: "Shampoo", price: 80 },
+    { name: "Hand Wash", price: 70 },
+    { name: "Laundry Detergent", price: 90 },
+    { name: "Dish Wash Liquid", price: 60 },
+    { name: "Room Freshener", price: 85 },
+    { name: "Mop Refill", price: 55 },
+    { name: "Bath Scrubber", price: 40 },
+    { name: "Cleaning Wipes", price: 35 },
+    { name: "Garbage Bags", price: 30 },
+    { name: "Nail Cutter", price: 25 },
+    { name: "Cotton Buds", price: 20 },
+    { name: "Face Tissues", price: 25 }
+  ],
+  cat5: [
+    { name: "Floral Perfume", price: 250 },
+    { name: "Oud Perfume", price: 320 },
+    { name: "Citrus Splash", price: 180 },
+    { name: "Amber Musk", price: 400 },
+    { name: "Cool Mist", price: 220 },
+    { name: "Rose Bloom", price: 260 },
+    { name: "Night Magic", price: 280 },
+    { name: "Luxury Oud", price: 450 },
+    { name: "Morning Dew", price: 230 },
+    { name: "Ocean Breeze", price: 210 }
+  ],
+  cat6: [
+    { name: "Sunflower Oil 1L", price: 120 },
+    { name: "Groundnut Oil 1L", price: 130 },
+    { name: "Ghee 500ml", price: 250 },
+    { name: "Sesame Oil 1L", price: 140 },
+    { name: "Mustard Oil 1L", price: 125 },
+    { name: "Coconut Oil 500ml", price: 90 },
+    { name: "Organic Ghee", price: 300 },
+    { name: "Rice Bran Oil", price: 110 }
+  ],
+  cat7: [
+    { name: "Dish Wash Gel", price: 45 },
+    { name: "Floor Cleaner", price: 85 },
+    { name: "Bathroom Cleaner", price: 75 },
+    { name: "Glass Cleaner", price: 60 },
+    { name: "Toilet Cleaner", price: 70 },
+    { name: "Hand Sanitizer", price: 50 },
+    { name: "Fabric Softener", price: 95 },
+    { name: "Kitchen Cleaner", price: 80 },
+    { name: "Multipurpose Cleaner", price: 100 },
+    { name: "Liquid Detergent", price: 110 },
+    { name: "Car Wash Liquid", price: 130 },
+    { name: "Baby Bottle Cleaner", price: 90 },
+    { name: "Fruits & Veg Wash", price: 60 },
+    { name: "Room Freshener Spray", price: 150 },
+    { name: "Insect Repellent", price: 85 },
+    { name: "Bleach Liquid", price: 55 },
+    { name: "Drain Cleaner", price: 65 },
+    { name: "Stain Remover", price: 75 }
+  ],
+  cat8: [
+    { name: "Cashews 250g", price: 220 },
+    { name: "Almonds 250g", price: 200 },
+    { name: "Walnuts 250g", price: 260 },
+    { name: "Pistachios 250g", price: 230 },
+    { name: "Raisins 250g", price: 150 },
+    { name: "Dates 500g", price: 180 },
+    { name: "Figs 250g", price: 270 },
+    { name: "Mixed Nuts 250g", price: 250 },
+    { name: "Apricots 250g", price: 210 },
+    { name: "Prunes 250g", price: 190 }
+  ],
+  cat9: [
+    { name: "Vanilla Ice Cream", price: 60 },
+    { name: "Chocolate Ice Cream", price: 70 },
+    { name: "Strawberry Ice Cream", price: 65 },
+    { name: "Butterscotch Ice Cream", price: 75 },
+    { name: "Mango Ice Cream", price: 70 },
+    { name: "Black Currant", price: 80 },
+    { name: "Choco Chip", price: 85 },
+    { name: "Kulfi", price: 60 },
+    { name: "Tutti Frutti", price: 70 },
+    { name: "Pista Delight", price: 75 },
+    { name: "Dry Fruit Ice Cream", price: 90 },
+    { name: "Falooda", price: 95 }
+  ],
+  cat10: [
+    { name: "Agarbatti", price: 20 },
+    { name: "Camphor", price: 30 },
+    { name: "Puja Oil", price: 60 },
+    { name: "Cotton Wicks", price: 25 },
+    { name: "Dhoop Sticks", price: 40 },
+    { name: "Kalash Set", price: 120 },
+    { name: "Puja Bell", price: 80 },
+    { name: "Kumkum Powder", price: 15 },
+    { name: "Haldi", price: 20 },
+    { name: "Ghee Diya", price: 35 },
+    { name: "Camphor Tablets", price: 50 },
+    { name: "Tulsi Mala", price: 90 }
+  ],
+  cat11: [
+    { name: "Milk Chocolate", price: 60 },
+    { name: "Dark Chocolate", price: 70 },
+    { name: "Fruit & Nut Bar", price: 80 },
+    { name: "Hazelnut Delight", price: 90 },
+    { name: "White Chocolate", price: 65 },
+    { name: "Caramel Bar", price: 75 },
+    { name: "Mint Choco Bar", price: 70 },
+    { name: "Bubbly Chocolate", price: 55 },
+    { name: "Choco Fudge", price: 85 },
+    { name: "Peanut Crunch", price: 60 },
+    { name: "Almond Treat", price: 90 },
+    { name: "Nougat Bar", price: 80 }
+  ],
+  cat12: [
+    { name: "Neem Face Wash", price: 60 },
+    { name: "Charcoal Face Wash", price: 70 },
+    { name: "Aloe Face Wash", price: 65 },
+    { name: "Vitamin C Wash", price: 75 },
+    { name: "Tea Tree Wash", price: 80 },
+    { name: "Brightening Wash", price: 85 },
+    { name: "Hydrating Wash", price: 70 },
+    { name: "Oil Clear Wash", price: 65 },
+    { name: "Glow Wash", price: 90 },
+    { name: "Foam Cleanser", price: 85 },
+    { name: "Detox Wash", price: 95 },
+    { name: "Men’s Wash", price: 80 },
+    { name: "Herbal Wash", price: 75 },
+    { name: "Refreshing Gel", price: 65 }
+  ]
+};
+
+
+const productDescriptions = {
+  cat1: [
+    "Neem Fresh Soap helps fight acne and refresh your skin naturally.",
+    "Charcoal Deep Clean draws out impurities for a fresh look.",
+    "Sandal Luxe Bar leaves your skin fragrant and soft.",
+    "Herbal Glow Soap restores natural brightness and hydration.",
+    "Rose Moisture Bar soothes sensitive skin with a rosy scent.",
+    "Coconut Cream Soap deeply nourishes and softens skin.",
+    "Tulsi Neem Soap purifies skin and reduces oiliness.",
+    "Lemon Zest Bar energizes with a citrusy burst of freshness.",
+    "Aloe Gentle Soap calms irritation and hydrates your skin.",
+    "Milk Soft Bar smoothens skin with a creamy lather."
+  ],
+  cat2: [
+    "This serum brightens skin tone with powerful Vitamin C.",
+    "Moisturizer with aloe keeps your skin soft all day.",
+    "Detox mask removes dirt and clears clogged pores.",
+    "Protects skin from harmful UV rays with SPF 50.",
+    "A gentle toner to refresh and balance pH levels.",
+    "Face cream that promotes brightness and glow.",
+    "Hydrating gel provides non-greasy moisture.",
+    "Night cream that repairs skin while you sleep.",
+    "Roll-on reduces puffiness and dark circles.",
+    "Mattifying lotion controls excess oil.",
+    "Targeted gel helps clear stubborn acne.",
+    "Face wash that revives dull skin instantly."
+  ],
+  cat3: [
+    "Cocoa body butter deeply hydrates dry skin.",
+    "Lotion leaves skin feeling soft and smooth.",
+    "Aloe gel cools sunburn and soothes inflammation.",
+    "Scrub removes dead cells for glowing skin.",
+    "Lavender wash gives you a calming bath time.",
+    "Rose mist refreshes skin and tightens pores."
+  ],
+  cat4: [
+    "Herbal toothpaste for strong teeth and fresh breath.",
+    "Soft bristle brushes for gentle cleaning.",
+    "Kills germs and moisturizes hands.",
+    "Lemon formula cuts through grease easily.",
+    "Powerful detergent for bright clothes.",
+    "Toilet cleaner with strong stain removal.",
+    "Reusable cloth ideal for daily mopping.",
+    "Multi-purpose spray for all household surfaces.",
+    "Absorbent towel made of fine cotton.",
+    "Easy grip and sharp edges for quick trimming.",
+    "Smooth shave without irritation.",
+    "Soft cotton buds for gentle cleaning.",
+    "Face tissues for quick refreshment.",
+    "Wipes that remove dust and bacteria."
+  ],
+  cat5: [
+    "Premium fragrance with exotic oud notes.",
+    "Light floral mist to keep you refreshed.",
+    "Zesty and uplifting citrus fragrance.",
+    "A rich scent with woody amber base.",
+    "Fresh ocean breeze captured in a bottle.",
+    "Elegant musk perfect for evenings.",
+    "Natural attar with long-lasting aroma.",
+    "Relaxing lavender essence to soothe senses.",
+    "Intense oud for special occasions.",
+    "Mild sandal scent with traditional charm."
+  ],
+  cat6: [
+    "100% pure groundnut oil for cooking.",
+    "Coconut oil perfect for hair and skin.",
+    "Refined sunflower oil for all-purpose cooking.",
+    "Traditional ghee with rich aroma and taste.",
+    "Mustard oil packed with natural antioxidants.",
+    "Cold-pressed sesame oil for healthy meals.",
+    "Desi ghee made from grass-fed milk.",
+    "Light oil with heart-healthy fats."
+  ],
+  cat7: [
+    "Effective detergent for everyday clothes.",
+    "Removes tough stains from bathroom tiles.",
+    "Streak-free shine on all glass surfaces.",
+    "Dissolves tough kitchen grease instantly.",
+    "Thorough cleaning of toilet bowl.",
+    "Softens clothes with gentle fragrance.",
+    "Gentle on hands and tough on grease.",
+    "Kills germs and keeps hands moisturized.",
+    "One solution for all cleaning tasks.",
+    "Clears blocked drains quickly.",
+    "Disinfectant for daily surface cleaning.",
+    "Safe wash for fruits and vegetables.",
+    "Polishes windows and mirrors brilliantly.",
+    "Gives floor a sparkling clean finish.",
+    "Keeps rooms smelling fresh for hours.",
+    "Fabric-safe spray for a fresh scent.",
+    "Kills 99.9% germs in laundry.",
+    "Targets stubborn stains effectively."
+  ],
+  cat8: [
+    "Crunchy and nutritious almonds for snacking.",
+    "Cashews packed with protein and energy.",
+    "Heart-healthy walnuts rich in omega-3.",
+    "Sweet and juicy raisins for all ages.",
+    "Premium quality pistachios for snacking.",
+    "Naturally dried figs rich in fiber.",
+    "Blend of all dry fruits in one pack.",
+    "Soft dates full of natural sweetness.",
+    "Almonds with chocolate for delicious bites.",
+    "Dried apricots that aid digestion."
+  ],
+  cat9: [
+    "Classic chocolate cone loved by all.",
+    "Smooth vanilla in a convenient cup.",
+    "Sweet mango ice cream delight.",
+    "Crunchy butterscotch with caramel bits.",
+    "Desi-style kulfi with rich flavor.",
+    "Fruity tutti frutti cup for kids.",
+    "Chocolate fudge for ultimate indulgence.",
+    "Nutty pista flavor in crispy cone.",
+    "Mixed berry goodness in one scoop.",
+    "Topped with nuts and dry fruits.",
+    "Strawberry flavor with natural color.",
+    "Black currant with a tangy twist."
+  ],
+  cat10: [
+    "Pure camphor for religious rituals.",
+    "Special puja oil with mild fragrance.",
+    "Long-lasting incense sticks.",
+    "Cotton wicks for lamps and diyas.",
+    "Essential kumkum and turmeric pack.",
+    "Beautiful diya for temple use.",
+    "Hand bell to enhance puja vibes.",
+    "Sandalwood powder for holy rituals.",
+    "Decorative kalash for ceremonies.",
+    "Traditional tulsi mala for devotees.",
+    "Vibrant puja cloth set for altar.",
+    "Camphor tablets for spiritual use."
+  ],
+  cat11: [
+    "Creamy milk chocolate bar.",
+    "Dark chocolate for a rich taste.",
+    "Loaded with fruits and crunchy nuts.",
+    "Hazelnut center with silky chocolate.",
+    "Crunchy peanuts and caramel blend.",
+    "Minty freshness with chocolate.",
+    "Bubbly texture for fun bites.",
+    "White chocolate with smooth taste.",
+    "Chewy caramel wrapped in fudge.",
+    "Nut-filled chocolate for extra crunch.",
+    "Mocha twist for coffee lovers.",
+    "Mint choco for refreshing snack."
+  ],
+  cat12: [
+    "Cleanses acne-prone skin gently.",
+    "Activated charcoal unclogs pores.",
+    "Aloe face wash for soft skin.",
+    "Boosts glow with Vitamin C.",
+    "Fights acne with tea tree oil.",
+    "Brightens skin tone naturally.",
+    "Hydrates without making skin oily.",
+    "Controls oil for a matte finish.",
+    "Reveals glowing skin with daily use.",
+    "Foaming cleanser for deep clean.",
+    "Removes toxins from face gently.",
+    "Designed specially for men’s skin.",
+    "Infused with ayurvedic herbs.",
+    "Cleans and refreshes instantly."
+  ]
+};
+
+ const products = {};
+categories.forEach(cat => {
+  if (cat.key !== 'all') {
+    products[cat.key] = (productImages[cat.key] || []).map((img, i) => {
+      const details = productDetails[cat.key]?.[i];
+      return {
+        name: details ? details.name : `${cat.label} Item ${i + 1}`,
+        img: `products/${img}`,
+        desc: details ? productDescriptions[cat.key]?.[i] || `Top-quality ${details.name} for everyday use.` : `This ${cat.label} product provides great value.`,
+        price: details ? details.price : 50 + i * 10,
+        discount: 5 + i * 3,
+        highlights: [
+          `Quantity: ${100 + i * 10}g`,
+          `Size: Medium`,
+          `Usage: Daily`,
+          `Pack: ${i + 1} pcs`,
+          `Shelf Life: 12 months`
+        ]
+      };
+    });
+  }
+});
+products['all'] = Object.values(products).flat();
+
+
+  let cart = [];
+  let productCounts = {}; // Track quantity of each product
+
+
+  function updateCartCount() {
+    document.getElementById('cart-count').textContent = cart.length;
+  }
+
+  function addToCart(item) {
+    try {
+      cart.push(item);
+      updateCartCount();
+      renderCart();
+    } catch (e) {
+      showError("Failed to add item to cart");
+    }
+  }
+
+  function removeFromCart(index) {
+    cart.splice(index, 1);
+    updateCartCount();
+    renderCart();
+  }
+
+  function toggleCart() {
+    const modal = document.getElementById('cart-modal');
+    const emptyMsg = document.getElementById('empty-cart-msg');
+
+    if (modal.style.display === 'block') {
+      modal.style.display = 'none';
+      emptyMsg.classList.remove('show');
+    } else {
+      if (cart.length === 0) {
+        emptyMsg.classList.add('show');
+        setTimeout(() => {
+          emptyMsg.classList.remove('show');
+        }, 2000);
+        modal.style.display = 'none';
+      } else {
+        renderCart();
+        modal.style.display = 'block';
+        emptyMsg.classList.remove('show');
+      }
+    }
+  }
+
+  function renderCart() {
+    const modal = document.getElementById('cart-modal');
+    modal.innerHTML = '';
+
+    if (cart.length === 0) {
+      modal.innerHTML = '<p>Your cart is empty.</p>';
+      return;
+    }
+
+    cart.forEach((item, index) => {
+      const div = document.createElement('div');
+      div.className = 'cart-item';
+      div.innerHTML = `
+        <img src="${item.img}" alt="${item.name}" />
+        <div class="cart-item-info">
+          <p>${item.name}</p>
+          <p>Price: ₹${item.price}</p>
+        </div>
+        <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
+      `;
+      modal.appendChild(div);
+    });
+
+    const placeOrderBtn = document.createElement('button');
+    placeOrderBtn.className = 'place-order';
+    placeOrderBtn.textContent = 'Place Order';
+    placeOrderBtn.onclick = () => {
+  if (cart.length === 0) {
+    showError("Cart is empty, cannot place order");
+    return;
+  }
+  const cartData = encodeURIComponent(JSON.stringify(cart));
+  window.location.href = `order.html?cart=${cartData}`;
+};
+
+    modal.appendChild(placeOrderBtn);
+  }
+
+  function showError(message) {
+    const errorContainer = document.getElementById('error-container');
+    errorContainer.textContent = message;
+    errorContainer.style.display = 'block';
+    setTimeout(() => {
+      errorContainer.style.display = 'none';
+    }, 3000);
+  }
+
+  function showProductPopup(product) {
+    document.getElementById('popup-img').src = product.img;
+    document.getElementById('popup-name').textContent = product.name;
+    document.getElementById('popup-price').textContent = `₹${product.price}`;
+    document.getElementById('popup-desc').textContent = product.desc;
+    document.getElementById('popup-order-now').onclick = () => {
+  orderProductNow(product);
+};
+
+
+    const highlightsList = document.getElementById('popup-highlights');
+    highlightsList.innerHTML = '';
+    product.highlights.forEach(h => {
+      const li = document.createElement('li');
+      li.textContent = h;
+      highlightsList.appendChild(li);
+    });
+
+    document.getElementById('popup-cart').onclick = () => {
+      addToCart(product);
+      closeProductPopup();
+    };
+
+    document.getElementById('product-popup').style.display = 'flex';
+  }
+
+  function closeProductPopup() {
+    document.getElementById('product-popup').style.display = 'none';
+  }
+
+ function renderCategories() {
+  const container = document.getElementById('category-list');
+  container.innerHTML = '';  // Clear existing categories
+
+  categories.forEach(cat => {
+    const div = document.createElement('div');
+    div.className = 'category-icon';
+    div.innerHTML = `
+      <div class="circle-img">
+        <img src="${cat.img}" alt="${cat.label}">
+      </div>
+      <span>${cat.label}</span>
+    `;
+
+    div.onclick = () => {
+      // Remove 'active' class from all category icons
+      document.querySelectorAll('.category-icon').forEach(el => el.classList.remove('active'));
+      
+      // Add 'active' class to the clicked category
+      div.classList.add('active');
+
+      // Render products for selected category
+      renderProducts(cat.key);
+    };
+
+    container.appendChild(div);
+  });
+}
+
+  const categoryBackgroundClasses = {
+  all: 'cat-all',
+  cat1: 'cat-cat1',
+  cat2: 'cat-cat2',
+  cat3: 'cat-cat3',
+  cat4: 'cat-cat4',
+  cat5: 'cat-cat5',
+  cat6: 'cat-cat6',
+  cat7: 'cat-cat7',
+  cat8: 'cat-cat8',
+  cat9: 'cat-cat9',
+  cat10: 'cat-cat10',
+  cat11: 'cat-cat11',
+  cat12: 'cat-cat12'
+};
+
+
+  function renderProducts(categoryKey) {
+  const container = document.getElementById('product-list');
+  container.innerHTML = '';
+
+  // 🔄 Change body background class
+  document.body.className = ''; // Remove all existing classes
+  const bgClass = categoryBackgroundClasses[categoryKey] || 'cat-all';
+  document.body.classList.add(bgClass);
+
+  const prodList = (categoryKey === 'all') ? products['all'] : products[categoryKey] || [];
+
+  if (prodList.length === 0) {
+    container.innerHTML = '<p>No products found in this category.</p>';
+    return;
+  }
+
+  prodList.forEach((product, i) => {
+  const card = document.createElement('div');
+  card.className = 'product-card';
+  card.style.animationDelay = `${i * 0.05}s`; // 👈 staggered slide-up
+
+  card.innerHTML = `
+    <img src="${product.img}" alt="${product.name}" class="product-img-clickable" />
+    <h3>${product.name}</h3>
+
+  <div style="display: flex; justify-content: space-between; align-items: center; margin: 6px 0;">
+    <p style="margin: 0;">Price: ₹${product.price}</p>
+    <div style="display: flex; align-items: center; gap: 6px;">
+      <button class="qty-btn" data-action="decrease" style="padding: 2px 6px;">-</button>
+      <span class="qty-count">0</span>
+      <button class="qty-btn" data-action="increase" style="padding: 2px 6px;">+</button>
+    </div>
+  </div>
+
+  <p style="margin: 4px 0;">Discount: ${product.discount}%</p>
+
+  <div class="actions">
+    <button class="add-to-cart-btn">Add to Cart</button>
+    <button class="order-now-btn">Order Now</button>
+  </div>
+`;
+
+
+
+const qtyCount = card.querySelector('.qty-count');
+let count = 0;
+
+card.querySelectorAll('.qty-btn').forEach(btn => {
+  btn.onclick = (e) => {
+    e.stopPropagation();
+    const action = btn.getAttribute('data-action');
+
+    if (action === 'increase') {
+      count++;
+      addToCart(product); // ✅ Add every time
+    } else if (action === 'decrease' && count > 0) {
+      count--;
+      const index = cart.findIndex(item => item.name === product.name);
+      if (index !== -1) removeFromCart(index); // ✅ Remove one
+    }
+
+    qtyCount.textContent = count;
+  };
+});
+
+
+
+
+
+
+      card.querySelector('.add-to-cart-btn').onclick = (e) => {
+        e.stopPropagation();
+        addToCart(product);
+      };
+      card.querySelector('.order-now-btn').onclick = (e) => {
+  e.stopPropagation();
+  const productDetails = encodeURIComponent(JSON.stringify([product]));
+  window.location.href = `order.html?cart=${productDetails}`;
+};
+
+
+      card.onclick = () => showProductPopup(product);
+
+      container.appendChild(card);
+    });
+  }
+
+  // 🔍 Search Functionality
+  document.getElementById('search-input').addEventListener('input', function () {
+    const query = this.value.trim().toLowerCase();
+    const container = document.getElementById('product-list');
+    container.innerHTML = '';
+
+    if (query === '') {
+      renderProducts('all');
+      return;
+    }
+
+    const filtered = products['all'].filter(p => p.name.toLowerCase().includes(query));
+    if (filtered.length === 0) {
+      container.innerHTML = '<p style="text-align:center; font-weight:500;">No items available. Available soon!</p>';
+      return;
+    }
+
+    filtered.forEach(product => {
+      const card = document.createElement('div');
+card.className = 'product-card';
+card.innerHTML = `
+  <img src="${product.img}" alt="${product.name}" class="product-img-clickable" />
+  <h3>${product.name}</h3>
+  <p>Price: ₹${product.price}</p>
+  <p>Discount: ${product.discount}%</p>
+  <div class="actions">
+    <button class="add-to-cart-btn">Add to Cart</button>
+    <button class="order-now-btn">Order Now</button>
+  </div>
+`;
+
+card.querySelector('.add-to-cart-btn').onclick = (e) => {
+  e.stopPropagation();
+  addToCart(product);
+};
+
+card.querySelector('.order-now-btn').onclick = (e) => {
+  e.stopPropagation();
+  const productDetails = encodeURIComponent(JSON.stringify([product]));
+  window.location.href = `order.html?cart=${productDetails}`;
+};
+
+// ✅ Only trigger popup on image click
+card.querySelector('.product-img-clickable').onclick = (e) => {
+  e.stopPropagation();
+  showProductPopup(product);
+};
+
+container.appendChild(card);
+
+    });
+  });
+  function orderProductNow(product) {
+  const productDetails = encodeURIComponent(JSON.stringify([product]));
+  window.location.href = `order.html?cart=${productDetails}`;
+}
+
+
+  // Initialize all
+  detectLocation();
+  renderCategories();
+  renderProducts('all');
+  updateCartCount();
+</script>
+
+</body>
+</html>
