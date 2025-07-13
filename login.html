@@ -80,11 +80,28 @@
     .signup-link a:hover {
       text-decoration: underline;
     }
+
+    .continue-btn {
+      margin-top: 15px;
+      display: inline-block;
+      background-color: #28a745;
+      color: white;
+      padding: 10px 20px;
+      font-size: 15px;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .continue-btn:hover {
+      background-color: #218838;
+    }
   </style>
 </head>
 <body>
   <div class="login-container">
-    <h2>Village Mart </h2>
+    <h2>Village Mart</h2>
     <form action="login.php" method="post">
       <label>Mobile Number:</label>
       <input type="text" name="mobile" required>
@@ -94,8 +111,11 @@
 
       <input type="submit" value="Login">
     </form>
+
+    <a href="index.php" class="continue-btn">Continue without Login</a>
+
     <div class="signup-link">
-      Don’t have an account? <a href="signup.html">Sign Up</a>
+      Don't have an account? <a href="signup.html">Sign Up</a>
     </div>
   </div>
 </body>
