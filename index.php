@@ -335,7 +335,7 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
       <img src="https://img.icons8.com/ios-filled/50/000000/user-male-circle.png" alt="Profile" />
       <div class="dropdown" id="profileDropdown">
   <?php if ($isLoggedIn): ?>
-    <a href="#">👋 <?php echo htmlspecialchars($userName); ?></a>
+    <a href="#"><?php echo htmlspecialchars($userName); ?></a>
     <a href="#">Order Details</a>
     <a href="#">Payment History</a>
     <a href="logout.php">Logout</a>
@@ -547,7 +547,7 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
       // Add username at top of dropdown
       const userLink = document.createElement('a');
       userLink.href = '#';
-      userLink.innerText = `👋 ${username}`;
+      userLink.innerText = `${username}`;
       dropdown.prepend(userLink);
     }
   });
@@ -752,7 +752,7 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
       <img src="https://img.icons8.com/ios-filled/50/000000/user-male-circle.png" alt="Profile" />
      <div class="dropdown" id="profileDropdown">
   <?php if ($isLoggedIn): ?>
-    <a href="#">👋 <?php echo htmlspecialchars($userName); ?></a>
+    <a href="#"><?php echo htmlspecialchars($userName); ?></a>
     <a href="#">Order Details</a>
     <a href="#">Payment History</a>
     <a href="logout.php">Logout</a>
