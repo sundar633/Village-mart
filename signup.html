@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Signup</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #74ebd5, #ACB6E5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .signup-container {
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 350px;
+    }
+
+    h2 {
+      font-size: 30px;
+      margin-bottom: 30px;
+      color: #333;
+      animation: zoomInOut 2s infinite;
+    }
+
+    @keyframes zoomInOut {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    input[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      background: #007bff;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    input[type="submit"]:hover {
+      background: #0056b3;
+    }
+
+    .login-link {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .login-link a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-container">
+    <h2>Village Mart </h2>
+    <form action="register.php" method="post">
+      <label>Name:</label>
+      <input type="text" name="name" required>
+
+      <label>Mobile Number:</label>
+      <input type="text" name="mobile" required>
+
+      <label>Password:</label>
+      <input type="password" name="password" id="password" required>
+
+      <label>Confirm Password:</label>
+      <input type="password" id="confirm_password" required>
+
+      <input type="submit" value="Sign Up">
+    </form>
+    <div class="login-link">
+      Already have an account? <a href="login.html">Login</a>
+    </div>
+  </div>
+
+  <script>
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+      const pass = document.getElementById('password').value;
+      const confirm = document.getElementById('confirm_password').value;
+      if (pass !== confirm) {
+        alert("Passwords do not match!");
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>

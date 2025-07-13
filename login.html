@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #74ebd5, #ACB6E5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-container {
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 350px;
+    }
+
+    h2 {
+      font-size: 30px;
+      margin-bottom: 30px;
+      color: #333;
+      animation: zoomInOut 2s infinite;
+    }
+
+    @keyframes zoomInOut {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    input[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      background: #007bff;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    input[type="submit"]:hover {
+      background: #0056b3;
+    }
+
+    .signup-link {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .signup-link a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Village Mart </h2>
+    <form action="login.php" method="post">
+      <label>Mobile Number:</label>
+      <input type="text" name="mobile" required>
+
+      <label>Password:</label>
+      <input type="password" name="password" required>
+
+      <input type="submit" value="Login">
+    </form>
+    <div class="signup-link">
+      Don’t have an account? <a href="signup.html">Sign Up</a>
+    </div>
+  </div>
+</body>
+</html>
