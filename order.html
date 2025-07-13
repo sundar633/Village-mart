@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Order Details - Village Mart</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background: #f5f5f5;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      padding: 10px 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+    .heading {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      position: relative;
+    }
+    .username {
+      font-weight: bold;
+    }
+    .profile-icon {
+      cursor: pointer;
+      font-size: 20px;
+    }
+    .profile-dropdown {
+      position: absolute;
+      right: 0;
+      top: 40px;
+      background: white;
+      border: 1px solid #ccc;
+      display: none;
+      flex-direction: column;
+      width: 150px;
+      z-index: 999;
+    }
+    .profile-dropdown a {
+      padding: 10px;
+      text-decoration: none;
+      color: #333;
+      border-bottom: 1px solid #eee;
+    }
+    .profile-dropdown a:hover {
+      background: #f0f0f0;
+    }
+
+    .empty-cart {
+      text-align: center;
+      margin-top: 80px;
+    }
+    .empty-cart h2 {
+      margin-bottom: 20px;
+      font-size: 22px;
+      color: #666;
+    }
+    .shop-now-btn {
+      padding: 12px 24px;
+      background: #007bff;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .shop-now-btn:hover {
+      background: #0056b3;
+    }
+
+    .order-container {
+      padding: 20px;
+    }
+    .product-item {
+      display: flex;
+      background: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      align-items: center;
+    }
+    .product-item img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+    .product-details {
+      margin-left: 20px;
+      flex: 1;
+    }
+    .product-details h4 {
+      margin-bottom: 5px;
+    }
+    .summary {
+      background: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    .place-order-btn {
+      margin-top: 15px;
+      padding: 12px 20px;
+      background: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+    .place-order-btn:hover {
+      background: #218838;
+    }
+
+    .success-message {
+      margin-top: 50px;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+    .success-message h2 {
+      color: green;
+      font-size: 24px;
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    @media (max-width: 600px) {
+      .product-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .product-details {
+        margin-left: 0;
+        margin-top: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="heading">Order Details</div>
+  <div class="profile-section">
+    <div class="username" id="username">Hi, Guest</div>
+    <div class="profile-icon" onclick="toggleDropdown()">👤</div>
+    <div class="profile-dropdown" id="profileDropdown">
+      <a href="login.html">Login</a>
+      <a href="signup.html">Signup</a>
+      <a href="myorders.html">My Orders</a>
+      <a href="#">Help & Support</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="empty-cart" id="emptyCart" style="display:none;">
+    <h2>Your cart is empty</h2>
+    <button class="shop-now-btn" onclick="goToIndex()">Shop Now</button>
+  </div>
+
+  <div class="order-container" id="orderContainer">
+    <!-- Product items will be injected here -->
+  </div>
+
+  <div class="summary" id="summary" style="display: none;">
+    <p id="totalDisplay"></p>
+    <button class="place-order-btn" onclick="placeOrder()">Place Order</button>
+  </div>
+
+  <div class="success-message" id="successMessage" style="display: none;">
+    <h2>🎉 Your Order Has Been Placed Successfully!</h2>
+  </div>
+</main>
+
+<script>
+  const orderContainer = document.getElementById("orderContainer");
+  const emptyCart = document.getElementById("emptyCart");
+  const summary = document.getElementById("summary");
+  const totalDisplay = document.getElementById("totalDisplay");
+  const successMessage = document.getElementById("successMessage");
+
+  // Username display
+  const username = localStorage.getItem("username");
+  if (username) {
+    document.getElementById("username").textContent = "Hi, " + username;
+  }
+
+  function toggleDropdown() {
+    const menu = document.getElementById("profileDropdown");
+    menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+  }
+
+  function logout() {
+    localStorage.removeItem("username");
+    localStorage.removeItem("loggedIn");
+    alert("Logged out!");
+    location.reload();
+  }
+
+  function goToIndex() {
+    window.location.href = "index.html";
+  }
+
+  // Parse URL cart parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const cartFromURL = urlParams.get('cart');
+  let cartItems = [];
+
+  try {
+    cartItems = cartFromURL ? JSON.parse(decodeURIComponent(cartFromURL)) : JSON.parse(localStorage.getItem("cartItems")) || [];
+  } catch (e) {
+    cartItems = [];
+  }
+
+  if (!Array.isArray(cartItems) || cartItems.length === 0) {
+    emptyCart.innerHTML = `
+      <div class="empty-cart-message">
+        <h2>Your cart is empty</h2>
+        <button onclick="window.location.href='index.html'" class="shop-now-btn">Shop Now</button>
+      </div>
+    `;
+    emptyCart.style.display = "block";
+    summary.style.display = "none";
+  } else {
+    emptyCart.style.display = "none";
+    let total = 0;
+
+    cartItems.forEach(item => {
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "product-item";
+      itemDiv.innerHTML = `
+        <img src="${item.img || item.image || 'https://via.placeholder.com/80'}" />
+        <div class="product-details">
+          <h4>${item.name}</h4>
+          <p>Price: ₹${item.price}${item.qty ? ` x ${item.qty}` : ''}</p>
+        </div>
+      `;
+      orderContainer.appendChild(itemDiv);
+      total += item.qty ? item.price * item.qty : item.price;
+    });
+
+    totalDisplay.textContent = "Total Price: ₹" + total;
+    summary.style.display = "block";
+  }
+
+  function placeOrder() {
+    const isLoggedIn = localStorage.getItem("loggedIn");
+    if (!isLoggedIn) {
+  window.location.href = "login.html";
+  return;
+}
+
+
+    const location = prompt("Enter your exact delivery location:");
+    if (!location || location.trim() === "") {
+      alert("Location required to place order.");
+      return;
+    }
+
+    successMessage.innerHTML = `
+      <div class="success-box">
+        <img src="tick.gif" alt="success" />
+        <h3>Order Placed Successfully!</h3>
+      </div>
+    `;
+    successMessage.style.display = "flex";
+    orderContainer.innerHTML = "";
+    summary.style.display = "none";
+    emptyCart.style.display = "none";
+
+    localStorage.removeItem("cartItems");
+
+    setTimeout(() => {
+      window.location.href = "server.html?status=placed";
+    }, 2500);
+  }
+</script>
+
+
+</body>
+</html>
